@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Unbreakable Weekly Cheat Sheet</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #f0ede8;
+    color: #1a1a1a;
+    padding: 2rem 1.5rem 4rem;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 0.25rem;
+    color: #1a1a1a;
+  }
+
+  .subtitle {
+    color: #666;
+    font-size: 0.85rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .week-section { margin-bottom: 3rem; }
+
+  .week-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+    display: inline-block;
+  }
+
+  .week-balanced .week-title { background: #2d6a4f; color: #fff; }
+  .week-busy .week-title    { background: #e07b39; color: #fff; }
+  .week-recovery .week-title { background: #5c7fa3; color: #fff; }
+
+  .days-grid {
+    display: grid;
+    gap: 0.75rem;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  }
+
+  .day-card {
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  }
+
+  .day-header {
+    padding: 0.5rem 0.75rem;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  .week-balanced .day-header { background: #d8f3dc; color: #2d6a4f; }
+  .week-busy .day-header     { background: #fde8d8; color: #a0522d; }
+  .week-recovery .day-header { background: #dce8f5; color: #3a5f80; }
+
+  .day-body { padding: 0.75rem; }
+
+  .block {
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px dashed #e5e5e5;
+  }
+  .block:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+
+  .block-label {
+    font-weight: 700;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 0.35rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .tag {
+    display: inline-block;
+    font-size: 0.65rem;
+    font-weight: 600;
+    padding: 1px 5px;
+    border-radius: 3px;
+    letter-spacing: 0.3px;
+  }
+  .tag-f    { background: #fef3c7; color: #92400e; }
+  .tag-a    { background: #dbeafe; color: #1e40af; }
+  .tag-c1   { background: #d1fae5; color: #065f46; }
+  .tag-c2   { background: #ede9fe; color: #4c1d95; }
+  .tag-c3   { background: #fce7f3; color: #9d174d; }
+  .tag-e    { background: #ffedd5; color: #c2410c; }
+  .tag-m    { background: #f3f4f6; color: #374151; }
+  .tag-rest { background: #f1f5f9; color: #64748b; }
+
+  .exercise-list { list-style: none; padding: 0; }
+
+  .exercise-list li {
+    font-size: 0.75rem;
+    color: #333;
+    padding: 1.5px 0;
+    padding-left: 0.85rem;
+    position: relative;
+  }
+  .exercise-list li::before {
+    content: '·';
+    position: absolute;
+    left: 0;
+    color: #aaa;
+    font-weight: 700;
+  }
+  .exercise-list li strong {
+    font-weight: 600;
+    color: #111;
+  }
+
+  /* Clickable exercise items */
+  .ex-link {
+    cursor: pointer;
+    border-radius: 3px;
+    transition: background 0.15s;
+  }
+  .ex-link:hover {
+    background: #f0f0f0;
+  }
+  .ex-link .ex-name {
+    text-decoration: underline dotted #aaa;
+    text-underline-offset: 2px;
+  }
+
+  .rest-card .day-body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 60px;
+    color: #999;
+    font-size: 0.8rem;
+    font-style: italic;
+  }
+
+  .rules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 0.5rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .rule-item {
+    background: #fff;
+    border-radius: 6px;
+    padding: 0.6rem 0.85rem;
+    font-size: 0.75rem;
+    border-left: 3px solid #f59e0b;
+    color: #333;
+  }
+  .rule-item strong {
+    color: #92400e;
+    display: block;
+    margin-bottom: 2px;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+
+  h2.section-heading {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #888;
+    margin-bottom: 0.75rem;
+  }
+
+  .snack-box {
+    background: #fff;
+    border-radius: 8px;
+    padding: 0.85rem 1rem;
+    margin-bottom: 2.5rem;
+    font-size: 0.78rem;
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .snack-box div { flex: 1; min-width: 180px; }
+  .snack-box .snack-title {
+    font-weight: 700;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #666;
+    margin-bottom: 0.35rem;
+  }
+
+  /* ── Replacement Sessions & TRX ── */
+  .replacement-section {
+    background: #fff;
+    border-radius: 8px;
+    padding: 1rem 1.2rem;
+    margin-top: 1.25rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+
+  .replacement-section h3 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #3a5f80;
+    margin-bottom: 0.65rem;
+  }
+
+  .video-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    margin-bottom: 1rem;
+  }
+
+  .video-list li a {
+    font-size: 0.8rem;
+    color: #1e40af;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.3rem 0.5rem;
+    border-radius: 4px;
+    transition: background 0.15s;
+  }
+  .video-list li a:hover { background: #dbeafe; }
+  .video-list li a::before { content: '▶'; font-size: 0.6rem; color: #93c5fd; }
+
+  .trx-link-box {
+    border-top: 1px dashed #e5e5e5;
+    padding-top: 0.75rem;
+  }
+
+  .trx-link-box h3 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #7b3fa0;
+    margin-bottom: 0.5rem;
+  }
+
+  .trx-link-box a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #7b3fa0;
+    color: #fff;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 0.45rem 1rem;
+    border-radius: 20px;
+    text-decoration: none;
+    transition: background 0.15s;
+  }
+  .trx-link-box a:hover { background: #6a2d8e; }
+
+  /* ── Pop-up overlay ── */
+  .popup-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.65);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+  }
+  .popup-overlay.active { display: flex; }
+
+  .popup-box {
+    background: #fff;
+    border-radius: 14px;
+    padding: 2rem;
+    max-width: 540px;
+    width: 90vw;
+    max-height: 90vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.35);
+    position: relative;
+  }
+
+  .popup-close {
+    position: absolute;
+    top: 0.75rem;
+    right: 1rem;
+    font-size: 1.4rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #888;
+    line-height: 1;
+  }
+  .popup-close:hover { color: #333; }
+
+  .popup-img {
+    width: 100%;
+    max-width: 420px;
+    border-radius: 8px;
+    object-fit: contain;
+  }
+
+  .popup-no-img {
+    width: 100%;
+    max-width: 420px;
+    aspect-ratio: 1;
+    background: #f3f4f6;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #aaa;
+    font-size: 0.85rem;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .popup-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    text-align: center;
+    color: #1a1a1a;
+    line-height: 1.25;
+  }
+
+  .popup-reps {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #2d6a4f;
+    text-align: center;
+  }
+
+  /* ── YouTube popup ── */
+  .yt-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.82);
+    z-index: 1100;
+    align-items: center;
+    justify-content: center;
+  }
+  .yt-overlay.active { display: flex; }
+
+  .yt-box {
+    background: #000;
+    border-radius: 10px;
+    width: 90vw;
+    max-width: 900px;
+    aspect-ratio: 16/9;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .yt-box iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+
+  .yt-close {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.75rem;
+    font-size: 1.6rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #fff;
+    z-index: 10;
+    line-height: 1;
+  }
+
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════ EXERCISE POP-UP ═══════════════════════════════════ -->
+<div class="popup-overlay" id="exPopup" onclick="closePopup(event)">
+  <div class="popup-box">
+    <button class="popup-close" onclick="closeExPopup()">✕</button>
+    <img class="popup-img" id="popupImg" src="" alt=""
+      onerror="this.style.display='none'; document.getElementById('popupNoImg').style.display='flex';">
+    <div class="popup-no-img" id="popupNoImg" style="display:none;">
+      <span style="font-size:2rem;">📷</span>
+      <span>Image coming soon</span>
+    </div>
+    <div class="popup-title" id="popupTitle"></div>
+    <div class="popup-reps" id="popupReps"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════ YOUTUBE POP-UP ═══════════════════════════════════ -->
+<div class="yt-overlay" id="ytPopup" onclick="closeYtPopup(event)">
+  <div class="yt-box">
+    <button class="yt-close" onclick="closeYtPopup()">✕</button>
+    <iframe id="ytFrame" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════ HEADER ═══════════════════════════════════ -->
+<h1>My Unbreakable Weekly Cheat Sheet</h1>
+<p class="subtitle">Based on Dr. Vonda Wright's FACE Method · Pick your week type · Sequence blocks following the rules · Watch overrides everything</p>
+
+<!-- LEGEND -->
+<h2 class="section-heading">Block Legend</h2>
+<div style="display:flex; flex-wrap:wrap; gap:0.5rem; margin-bottom:2rem;">
+  <div style="background:#fff; border-radius:6px; padding:0.5rem 0.85rem; font-size:0.75rem; display:flex; align-items:center; gap:0.5rem;"><span class="tag tag-f">F</span> <strong>Flexibility</strong> — Dynamic warm-up before + static stretches after every session</div>
+  <div style="background:#fff; border-radius:6px; padding:0.5rem 0.85rem; font-size:0.75rem; display:flex; align-items:center; gap:0.5rem;"><span class="tag tag-a">A</span> <strong>Aerobic</strong> — Running at Zone 2 pace (conversational). Add SIT = 4 × 30 sec sprints at end</div>
+  <div style="background:#fff; border-radius:6px; padding:0.5rem 0.85rem; font-size:0.75rem; display:flex; align-items:center; gap:0.5rem;"><span class="tag tag-c1">C1</span> <strong>Lower Body</strong> — Squat, deadlift, lunges, glutes, calves</div>
+  <div style="background:#fff; border-radius:6px; padding:0.5rem 0.85rem; font-size:0.75rem; display:flex; align-items:center; gap:0.5rem;"><span class="tag tag-c2">C2</span> <strong>Upper Body</strong> — Push-ups, rows, shoulder press, biceps, triceps</div>
+  <div style="background:#fff; border-radius:6px; padding:0.5rem 0.85rem; font-size:0.75rem; display:flex; align-items:center; gap:0.5rem;"><span class="tag tag-c3">C3</span> <strong>Full Body / Core</strong> — Planks, KB swings, Pallof press, balance. Lightest C block</div>
+  <div style="background:#fff; border-radius:6px; padding:0.5rem 0.85rem; font-size:0.75rem; display:flex; align-items:center; gap:0.5rem;"><span class="tag tag-e">E</span> <strong>Equilibrium & Footspeed</strong> — Agility drills after running, before cool-down. ~10 min</div>
+  <div style="background:#fff; border-radius:6px; padding:0.5rem 0.85rem; font-size:0.75rem; display:flex; align-items:center; gap:0.5rem;"><span class="tag tag-m">M</span> <strong>Movement Snacks</strong> — 10 squats/hour · single-leg balance · stair jumps · stand every 30–60 min</div>
+</div>
+
+<!-- SEQUENCING RULES -->
+<h2 class="section-heading">Sequencing Rules</h2>
+<div class="rules-grid">
+  <div class="rule-item"><strong>Watch first</strong>72h+ recovery → C3 or M only. No exceptions.</div>
+  <div class="rule-item"><strong>After R+SIT</strong>Never R or C the next day. Buffer with C3 or rest.</div>
+  <div class="rule-item"><strong>C days</strong>Never same C block two days in a row. Max 2 C days consecutive.</div>
+  <div class="rule-item"><strong>Running</strong>Morning only. Protects evening cortisol.</div>
+  <div class="rule-item"><strong>SIT</strong>Max 1×/week. Always 4 sprints only — never 8.</div>
+  <div class="rule-item"><strong>Long run</strong>Bonus only when watch is green + energy is genuinely high.</div>
+</div>
+
+<!-- DAILY CONSTANTS -->
+<h2 class="section-heading">Every Day (no recovery cost)</h2>
+<div class="snack-box">
+  <div>
+    <div class="snack-title">⚖️ Balance — Daily</div>
+    Single-leg stand while brushing teeth<br>
+    30+ sec each side · Eyes open<br>
+    Add to any daily standing task
+  </div>
+  <div>
+    <div class="snack-title">🪑 Movement Snacks — Every Work Hour</div>
+    10 squats every ~60 min<br>
+    Stand + move 3 min every 30–60 min<br>
+    Stair jumps whenever available
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════ BALANCED WEEK ═══════════════════════════════════ -->
+<div class="week-section week-balanced">
+  <div class="week-title">⚡ Balanced Week — 4 structured sessions</div>
+  <div class="days-grid">
+
+    <!-- DAY 1 -->
+    <div class="day-card">
+      <div class="day-header">Day 1 · C1 Lower Body</div>
+      <div class="day-body">
+        <div class="block">
+          <div class="block-label"><span class="tag tag-f">F</span> Dynamic Warm-Up ~15 min</div>
+          <ul class="exercise-list">
+            <li class="ex-link" onclick="showEx('Hip Circles Front & Back','×10 each leg','images/face/hip-circles.jpg')"><span class="ex-name">Hip Circles Front &amp; Back</span> <strong>×10 each leg</strong></li>
+            <li class="ex-link" onclick="showEx('Hip Swings Side to Side','×10 each leg','images/face/lateral-leg-swing-start.jpg')"><span class="ex-name">Hip Swings Side to Side</span> <strong>×10 each leg</strong></li>
+            <li class="ex-link" onclick="showEx('Deep Squats','×10','images/face/deep-squat-hold.jpg')"><span class="ex-name">Deep Squats</span> <strong>×10</strong></li>
+            <li class="ex-link" onclick="showEx('Open Book Cross','×10 each side','images/face/open-book-cross.jpg')"><span class="ex-name">Open Book Cross</span> <strong>×10 each side</strong></li>
+            <li class="ex-link" onclick="showEx('Inchworm','×5 cycles','images/face/inchworm.jpg')"><span class="ex-name">Inchworm</span> <strong>×5 cycles</strong></li>
+            <li class="ex-link" onclick="showEx('Heel & Toe Walks','×10 steps each','images/face/heel-to-toe-walk.jpg')"><span class="ex-name">Heel &amp; Toe Walks</span> <strong>×10 steps each</strong></li>
+            <li class="ex-link" onclick="showEx('High Knee to Chest Lunge','×10 each leg','images/face/knee-to-chest-stretch.jpg')"><span class="ex-name">High Knee to Chest Lunge</span> <strong>×10 each leg</strong></li>
+            <li class="ex-link" onclick="showEx('Side Shuffle','×10 each direction','images/face/side-shuffle.jpg')"><span class="ex-name">Side Shuffle</span> <strong>×10 each direction</strong></li>
+            <li class="ex-link" onclick="showEx('High Knee Rhythm Bounding','×10','images/face/high-knee-rhythm-bounding.jpg')"><span class="ex-name">High Knee Rhythm Bounding</span> <strong>×10</strong></li>
+            <li class="ex-link" onclick="showEx('Backward Lunge with Twist','×10','images/face/backward-lunge-with-twist.jpg')"><span class="ex-name">Backward Lunge with Twist</span> <strong>×10</strong></li>
+          </ul>
+        </div>
+        <div class="block">
+          <div class="block-label"><span class="tag tag-c1">C1</span> Lower Body</div>
+          <ul class="exercise-list">
+            <li class="ex-link" onclick="showEx('Goblet Squat','3× to fatigue — 6kg KB','images/face/goblet-squat.jpg')"><span class="ex-name">Goblet Squat — 6kg KB</span> <strong>3× to fatigue</strong></li>
+            <li class="ex-link" onclick="showEx('Romanian Deadlift','3× to fatigue — 2×5kg','images/face/romanian-deadlift.jpg')"><span class="ex-name">Romanian Deadlift — 2×5kg</span> <strong>3× to fatigue</strong></li>
+            <li class="ex-link" onclick="showEx('Split Squat','3× each leg — BW or 3kg','images/face/split-squat.jpg')"><span class="ex-name">Split Squat — BW or 3kg</span> <strong>3× each leg</strong></li>
+            <li class="ex-link" onclick="showEx('Hip Bridge','3× to fatigue — BW','images/face/glute-bridge.jpg')"><span class="ex-name">Hip Bridge — BW</span> <strong>3× to fatigue</strong></li>
+            <li class="ex-link" onclick="showEx('Banded Monster Walk','3×10 each side','images/face/banded-monster-walk.jpg')"><span class="ex-name">Banded Monster Walk</span> <strong>3×10 each side</strong></li>
+            <li class="ex-link" onclick="showEx('Calf Raise on stairs','3×15','images/face/calf-raise.jpg')"><span class="ex-name">Calf Raise on stairs</span> <strong>3×15</strong></li>
+          </ul>
+        </div>
+        <div class="block">
+          <div class="block-label"><span class="tag tag-f">F</span> Cool-Down ~15 min</div>
+          <ul class="exercise-list">
+            <li class="ex-link" onclick="showEx('Hip Flexor Lunge','30s×4 each side','images/face/hip-flexor-lunge.jpg')"><span class="ex-name">Hip Flexor Lunge</span> <strong>30s×4 each</strong></li>
+            <li class="ex-link" onclick="showEx('Piriformis Stretch','30s×4 each side','images/face/piriformis-stretch.jpg')"><span class="ex-name">Piriformis Stretch</span> <strong>30s×4 each</strong></li>
+            <li class="ex-link" onclick="showEx('Hamstrings Stretch','30s×4 each side','images/face/banded-hamstring-stretch-main.jpg')"><span class="ex-name">Hamstrings Stretch</span> <strong>30s×4 each</strong></li>
+            <li class="ex-link" onclick="showEx('Quad Stretch','30s×4 each side','images/face/quad-stretch.jpg')"><span class="ex-name">Quad Stretch</span> <strong>30s×4 each</strong></li>
+            <li class="ex-link" onclick="showEx('Calf Stretch','30s×4 each side','images/face/calf-stretch.jpg')"><span class="ex-name">Calf Stretch</span> <strong>30s×4 each</strong></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- DAY 2 -->
+    <div class="day-card">
+      <div class="day-header">Day 2 · Run Zone 2</div>
+      <div class="day-body">
+        <div class="block">
+          <div class="block-label"><span class="tag tag-f">F</span> Dynamic Warm-Up ~15 min</div>
+          <ul class="exercise-list">
+            <li class="ex-link" onclick="showEx('Hip Circles Front & Back','×10 each leg','images/face/hip-circles.jpg')"><span class="ex-name">Hip Circles Front &amp; Back</span> <strong>×10 each leg</strong></li>
+            <li class="ex-link" onclick="showEx('Hip Swings Side to Side','×10 each leg','images/face/lateral-leg-swing-start.jpg')"><span class="ex-name">Hip Swings Side to Side</span> <strong>×10 each leg</strong></li>
+            <li class="ex-link" onclick="showEx('Deep Squats','×10','images/face/deep-squat-hold.jpg')"><span class="ex-name">Deep Squats</span> <strong>×10</strong></li>
+            <li class="ex-link" onclick="showEx('High Knee to Chest Lunge','×10 each leg','images/face/knee-to-chest-stretch.jpg')"><span class="ex-name">High Knee to Chest Lunge</span> <strong>×10 each leg</strong></li>
+            <li class="ex-link" onclick="showEx('Side Shuffle','×10 each direction','images/face/side-shuffle.jpg')"><span class="ex-name">Side Shuffle</span> <strong>×10 each direction</strong></li>
+            <li class="ex-link" onclick="showEx('High Knee Rhythm Bounding','×10','images/face/high-knee-rhythm-bounding.jpg')"><span class="ex-name">High Knee Rhythm Bounding</span> <strong>×10</strong></li>
+            <li class="ex-link" onclick="showEx('Inchworm','×5 cycles','images/face/inchworm.jpg')"><span class="ex-name">Inchworm</span> <strong>×5 cycles</strong></li>
+          </ul>
+        </div>
+        <div class="block">
+          <div class="block-label"><span class="tag tag-a">A</span> Zone 2 Run 45–60 min</div>
+          <ul class="exercise-list">
+            <li>HR target: <strong>181 − your age</strong></li>
+            <li>Conversational pace throughout</li>
+            <li>No sprints today</li>
+          </ul>
+        </div>
+        <div class="block">
+          <div class="block-label"><span class="tag tag-e">E</span> Footspeed Program 1 — 3 rounds</div>
+          <ul class="exercise-list">
+            <li class="ex-link" onclick="showEx('Jump Rope','1 min per round · 3 rounds','images/face/jump-rope.jpg')"><span class="ex-name">Jump Rope</span> <strong>1 min</strong></li>
+            <li class="ex-link" onclick="showEx('Lateral Agility Hurdle Drill','30 sec per round · 3 rounds','images/face/lateral-agility-hurdle-drill.jpg')"><span class="ex-name">Lateral Agility Hurdle Drill</span> <strong>30 sec</strong></li>
+            <li class="ex-link" onclick="showEx('Box Step Over on stairs','30 sec per round · 3 rounds','images/face/seated-box-jump.jpg')"><span class="ex-name">Box Step Over on stairs</span> <strong>30 sec</strong></li>
+          </ul>
+        </div>
+        <div class="block">
+          <div class="block-label"><span class="tag tag-f">F</span> Cool-Down ~15 min</div>
+          <ul class="exercise-list">
+            <li class="ex-link" onclick="showEx('Hip Flexor Lunge','30s×4 each side','images/face/hip-flexor-lunge.jpg')"><span class="ex-name">Hip Flexor Lunge</span> <strong>30s×4 each</strong></li>
+            <li class="ex-link" onclick="showEx('Piriformis Stretch','30s×4 each side','images/face/piriformis-stretch.jpg')"><span class="ex-name">Piriformis Stretch</span> <strong>30s×4 each</strong></li>
+            <li class="ex-link" onclick="showEx('Hamstrings Stretch','30s×4 each side','images/face/banded-hamstring-stretch-main.jpg')"><span class="ex-name">Hamstrings Stretch</span> <strong>30s×4 each</strong></li>
+            <li class="ex-link" onclick="showEx('Quad Stretch','30s×4 each side','images/face/quad-stretch.jpg')"><span class="ex-name">Quad Stretch</span> <strong>30s×4 each</strong></li>
+            <li class="ex-link" onclick="showEx('Calf Stretch','30s×4 each side','images/face/calf-stretch.jpg')"><span class="ex-name">Calf Stretch</span> <strong>30s×4 each</strong></li>
+            <li class="ex-link" onclick="showEx('Adductors / Butterfly','30s×4','images/face/butterfly-stretch.jpg')"><span class="ex-name">Adductors / Butterfly</span> <strong>30s×4</strong></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- DAY 3 -->
+    <div class="day-card">
+      <div class="day-header">Day 3 · C2 Upper Body</div>
+      <div class="day-body">
+        <div class="block">
+          <div class="block-label"><span class="tag tag-f">F</span> Dynamic Warm-Up ~10 min</div>
+          <ul class="exercise-list">
+            <li class="ex-link" onclick="showEx('WITY Rotator Cuff','×4 each shape — no weight','images/face/rotator-cuff-WITY.jpg')"><span class="ex-name">WITY Rotator Cuff — no weight</span> <strong>×4 each shape</strong></li>
+            <li class="ex-link" onclick="showEx('Band Pull-Aparts','×10','images/face/band-pull-apart.jpg')"><span class="ex-name">Band Pull-Aparts</span> <strong>×10</strong></li>
+            <li class="ex-link" onclick="showEx('Arm Circles','×10 each direction','images/face/arm-circles.jpg')"><span class="ex-name">Arm Circles</span> <strong>×10 each direction</strong></li>
+            <li class="ex-link" onclick="showEx('Open Book Cross','×10 each side','images/face/open-book-cross.jpg')"><span class="ex-name">Open Book Cross</span> <strong>×10 each side</strong></li>
+            <li class="ex-link" onclick="showEx('Inchworm','×5 cycles','images/face/inchworm.jpg')"><span class="ex-name">Inchworm</span> <strong>×5 cycles</strong></li>
+          </ul>
+        </div>
+        <div class="block">
+          <div class="block-label"><span class="tag tag-c2">C2</span> Upper Body</div>
+          <ul class="exercise-list">
+            <li class="ex-link" onclick="showEx('Push-Up','3× to fatigue — full or bent knee','images/face/push-up.jpg')"><span class="ex-name">Push-Up — full or bent knee</span> <strong>3× to fatigue</strong></li>
+            <li class="ex-link" onclick="showEx('Band Row (anchored)','3× to fatigue','images/face/band-row.jpg')"><span class="ex-name">Band Row (anchored)</span> <strong>3× to fatigue</strong></li>
+            <li class="ex-link" onclick="showEx('DB Shoulder Press','3× to fatigue — 2×5kg','images/face/shoulder-press.jpg')"><span class="ex-name">DB Shoulder Press — 2×5kg</span> <strong>3× to fatigue</strong></li>
+            <li class="ex-link" onclick="showEx('Bicep Curl','3× to fatigue — 2×5kg','images/face/bicep-curl.jpg')"><span class="ex-name">Bicep Curl — 2×5kg</span> <strong>3× to fatigue</strong></li>
+            <li class="ex-link" onclick="showEx('Band Tricep Push-Down','3× to fatigue','images/face/band-tricep_push-down.jpg')"><span class="ex-name">Band Tricep Push-Down</span> <strong>3× to fatigue</strong></li>
+            <li class="ex-link" onclick="showEx('WITY','3×4 each shape — 3kg or no weight','images/face/WITY.jpg')"><span class="ex-name">WITY — 3kg or no weight</span> <strong>3×4 each shape</strong></li>
+          </ul>
+        </div>
+        <div class="block">
+          <div class="block-label"><span class="tag tag-f">F</span> Cool-Down ~15 min</div>
+          <ul class="exercise-list">
+            <li class="ex-link" onclick="showEx('Chest &amp; Shoulder Stretch (strap)','30s×4','images/face/shoulder-stretch.jpg')"><span class="ex-name">Chest &amp; Shoulder Stretch — strap</span> <strong>30s×4</strong></li>
+            <li class="ex-link" onclick="showEx('Triceps Stretch (strap)','30s×4 each side','images/face/overhead-triceps-stretch.jpg')"><span class="ex-name">Triceps Stretch — strap</span> <strong>30s×4 each</strong></li>
+            <li class="ex-link" onclick="showEx('Trunk Twists (strap)','30s×4 each side','images/face/trunk-twist.jpg')"><span class="ex-name">Trunk Twists — strap</span> <strong>30s×4 each</strong></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- DAY 4 -->
+    <div class="day-card rest-card">
+      <div class="day-header">Day 4 · Rest</div>
+      <div class="day-body">Rest or M only.<br>Balance + movement snacks.</div>
+    </div>
+
+    <!-- DAY 5 -->
+    <div class="day-card">
+      <div class="day-header">Day 5 · Run + SIT ⚠️ watch must be green</div>
+      <div class="day-body">
+        <div class="block">
+          <div class="block-label"><span class="tag tag-f">F</span> Dynamic Warm-Up ~15 min</div>
+          <ul class="exercise-list">
+            <li class="ex-link" onclick="showEx('Hip Circles Front & Back','×10 each leg','images/face/hip-circles.jpg')"><span class="ex-name">Hip Circles Front &amp; Back</span> <strong>×10 each leg</strong></li>
+            <li class="ex-link" onclick="showEx('Hip Swings Side to Side','×10 each leg','images/face/lateral-leg-swing-start.jpg')"><span class="ex-name">Hip Swings Side to Side</span> <strong>×10 each leg</strong></li>
+            <li class="ex-link" onclick="showEx('Deep Squats','×10','images/face/deep-squat-hold.jpg')"><span class="ex-name">Deep Squats</span> <strong>×10</strong></li>
+            <li class="ex-link" onclick="showEx('High Knee to Chest Lunge','×10 each leg','images/face/knee-to-chest-stretch.jpg')"><span class="ex-name">High Knee to Chest Lunge</span> <strong>×10 each leg</strong></li>
+            <li class="ex-link" onclick="showEx('Side Shuffle','×10 each direction','images/face/side-shuffle.jpg')"><span class="ex-name">Side Shuffle</span> <strong>×10 each direction</strong></li>
+            <li class="ex-link" onclick="showEx('High Knee Rhythm Bounding','×10','images/face/high-knee-rhythm-bounding.jpg')"><span class="ex-name">High Knee Rhythm Bounding</span> <strong>×10</strong></li>
+          </ul>
+        </div>
+        <div class="block">
+          <div class="block-label"><span class="tag tag-a">A</span> Zone 2 Run 45 min then SIT</div>
+          <ul class="exercise-list">
+            <li>Zone 2 run <strong>45 min</strong></li>
+            <li>Then: 4 × 30 sec MAX effort sprint</li>
+            <li>Recovery between sprints: <strong>2–3 min easy walk</strong></li>
+            <li>4 sprints only — never more</li>
+          </ul>
+        </div>
+        <div class="block">
+          <div class="block-label"><span class="tag tag-e">E</span> Footspeed Program 1 — 3 rounds</div>
+          <ul class="exercise-list">
+            <li class="ex-link" onclick="showEx('Jump Rope','1 min per round · 3 rounds','images/face/jump-rope.jpg')"><span class="ex-name">Jump Rope</span> <strong>1 min</strong></li>
+            <li class="ex-link" onclick="showEx('Lateral Agility Hurdle Drill','30 sec per round · 3 rounds','images/face/lateral-agility-hurdle-drill.jpg')"><span class="ex-name">Lateral Agility Hurdle Drill</span> <strong>30 sec</strong></li>
+            <li class="ex-link" onclick="showEx('Box Step Over on stairs','30 sec per round · 3 rounds','images/face/seated-box-jump.jpg')"><span class="ex-name">Box Step Over on stairs</span> <strong>30 sec</strong></li>
+          </ul>
+        </div>
+        <div class="block">
+          <div class="block-label"><span class="tag tag-f">F</span> Cool-Down ~15 min</div>
+          <ul class="exercise-list">
+            <li class="ex-link" onclick="showEx('Hip Flexor Lunge','30s×4 each side','images/face/hip-flexor-lunge.jpg')"><span class="ex-name">Hip Flexor Lunge</span> <strong>30s×4 each</strong></li>
+            <li class="ex-link" onclick="showEx('Piriformis Stretch','30s×4 each side','images/face/piriformis-stretch.jpg')"><span class="ex-name">Piriformis Stretch</span> <strong>30s×4 each</strong></li>
+            <li class="ex-link" onclick="showEx('Hamstrings Stretch','30s×4 each side','images/face/banded-hamstring-stretch-main.jpg')"><span class="ex-name">Hamstrings Stretch</span> <strong>30s×4 each</strong></li>
+            <li class="ex-link" onclick="showEx('Quad Stretch','30s×4 each side','images/face/quad-stretch.jpg')"><span class="ex-name">Quad Stretch</span> <strong>30s×4 each</strong></li>
+            <li class="ex-link" onclick="showEx('Calf Stretch','30s×4 each side','images/face/calf-stretch.jpg')"><span class="ex-name">Calf Stretch</span> <strong>30s×4 each</strong></li>
+            <li class="ex-link" onclick="showEx('Adductors / Butterfly','30s×4','images/face/butterfly-stretch.jpg')"><span class="ex-name">Adductors / Butterfly</span> <strong>30s×4</strong></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- DAY 6 -->
+    <div class="day-card">
+      <div class="day-header">Day 6 · C3 Full Body / Core</div>
+      <div class="day-body">
+        <div class="block">
+          <div class="block-label"><span class="tag tag-f">F</span> Dynamic Warm-Up ~10 min</div>
+          <ul class="exercise-list">
+            <li class="ex-link" onclick="showEx('Inchworm','×5 cycles','images/face/inchworm.jpg')"><span class="ex-name">Inchworm</span> <strong>×5 cycles</strong></li>
+            <li class="ex-link" onclick="showEx('Open Book Cross','×10 each side','images/face/open-book-cross.jpg')"><span class="ex-name">Open Book Cross</span> <strong>×10 each side</strong></li>
+            <li class="ex-link" onclick="showEx('Side Shuffle','×10 each direction','images/face/side-shuffle.jpg')"><span class="ex-name">Side Shuffle</span> <strong>×10 each direction</strong></li>
+            <li class="ex-link" onclick="showEx('Backward Lunge with Twist','×10','images/face/backward-lunge-with-twist.jpg')"><span class="ex-name">Backward Lunge with Twist</span> <strong>×10</strong></li>
+          </ul>
+        </div>
+        <div class="block">
+          <div class="block-label"><span class="tag tag-c3">C3</span> Full Body / Core</div>
+          <ul class="exercise-list">
+            <li class="ex-link" onclick="showEx('Front Plank','3× hold to fatigue','images/face/front-plank.jpg')"><span class="ex-name">Front Plank</span> <strong>3× hold to fatigue</strong></li>
+            <li class="ex-link" onclick="showEx('Side Plank (each side)','3× hold to fatigue','images/face/side-plank.jpg')"><span class="ex-name">Side Plank each side</span> <strong>3× hold to fatigue</strong></li>
+            <li class="ex-link" onclick="showEx('KB Swing','3×10 — 6kg','images/face/kettlebell-swing.jpg')"><span class="ex-name">KB Swing — 6kg</span> <strong>3×10</strong></li>
+            <li class="ex-link" onclick="showEx('Band Pallof Press','3×10 each side','images/face/cable-pallof-press.jpg')"><span class="ex-name">Band Pallof Press</span> <strong>3×10 each side</strong></li>
+            <li class="ex-link" onclick="showEx('Single-leg Balance &amp; Reach (clock)','×8 each direction each foot','images/face/single-leg-balance.jpg')"><span class="ex-name">Single-leg Balance &amp; Reach (clock)</span> <strong>×8 each direction each foot</strong></li>
+            <li class="ex-link" onclick="showEx('Backward Lunge with Twist','3×10 each leg','images/face/backward-lunge-with-twist.jpg')"><span class="ex-name">Backward Lunge with Twist</span> <strong>3×10 each leg</strong></li>
+          </ul>
+        </div>
+        <div class="block">
+          <div class="block-label"><span class="tag tag-f">F</span> Cool-Down ~15 min</div>
+          <ul class="exercise-list">
+            <li class="ex-link" onclick="showEx('Hip Flexor Lunge','30s×4 each side','images/face/hip-flexor-lunge.jpg')"><span class="ex-name">Hip Flexor Lunge</span> <strong>30s×4 each</strong></li>
+            <li class="ex-link" onclick="showEx('Piriformis Stretch','30s×4 each side','images/face/piriformis-stretch.jpg')"><span class="ex-name">Piriformis Stretch</span> <strong>30s×4 each</strong></li>
+            <li class="ex-link" onclick="showEx('Hamstrings Stretch','30s×4 each side','images/face/banded-hamstring-stretch-main.jpg')"><span class="ex-name">Hamstrings Stretch</span> <strong>30s×4 each</strong></li>
+            <li class="ex-link" onclick="showEx('Adductors / Butterfly','30s×4','images/face/butterfly-stretch.jpg')"><span class="ex-name">Adductors / Butterfly</span> <strong>30s×4</strong></li>
+            <li class="ex-link" onclick="showEx('Chest &amp; Shoulder Stretch (strap)','30s×4','images/face/shoulder-stretch.jpg')"><span class="ex-name">Chest &amp; Shoulder Stretch</span> <strong>30s×4</strong></li>
+            <li class="ex-link" onclick="showEx('Trunk Twists (strap)','30s×4 each side','images/face/trunk-twist.jpg')"><span class="ex-name">Trunk Twists</span> <strong>30s×4 each</strong></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- DAY 7 -->
+    <div class="day-card rest-card">
+      <div class="day-header">Day 7 · Rest</div>
+      <div class="day-body">Full rest.<br>Balance + movement snacks only.</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════ BUSY WEEK ═══════════════════════════════════ -->
+<div class="week-section week-busy">
+  <div class="week-title">🗓 Busy Week — 3 structured sessions</div>
+  <div class="days-grid">
+
+    <div class="day-card">
+      <div class="day-header">Day 1 · Run Zone 2</div>
+      <div class="day-body">
+        <div class="block">
+          <div class="block-label"><span class="tag tag-f">F</span> Dynamic Warm-Up ~10 min</div>
+          <ul class="exercise-list">
+            <li class="ex-link" onclick="showEx('Hip Circles Front & Back','×10 each leg','images/face/hip-circles.jpg')"><span class="ex-name">Hip Circles</span> <strong>×10 each leg</strong></li>
+            <li class="ex-link" onclick="showEx('Hip Swings Side to Side','×10 each leg','images/face/lateral-leg-swing-start.jpg')"><span class="ex-name">Hip Swings</span> <strong>×10 each leg</strong></li>
+            <li class="ex-link" onclick="showEx('High Knee to Chest Lunge','×10 each leg','images/face/knee-to-chest-stretch.jpg')"><span class="ex-name">High Knee to Chest Lunge</span> <strong>×10 each leg</strong></li>
+            <li class="ex-link" onclick="showEx('Side Shuffle','×10 each direction','images/face/side-shuffle.jpg')"><span class="ex-name">Side Shuffle</span> <strong>×10 each direction</strong></li>
+            <li class="ex-link" onclick="showEx('High Knee Rhythm Bounding','×10','images/face/high-knee-rhythm-bounding.jpg')"><span class="ex-name">High Knee Rhythm Bounding</span> <strong>×10</strong></li>
+          </ul>
+        </div>
+        <div class="block">
+          <div class="block-label"><span class="tag tag-a">A</span> Zone 2 Run 45–60 min</div>
+          <ul class="exercise-list">
+            <li>HR target: <strong>181 − your age</strong></li>
+            <li>Conversational pace throughout</li>
+          </ul>
+        </div>
+        <div class="block">
+          <div class="block-label"><span class="tag tag-e">E</span> Footspeed Program 1 — 3 rounds</div>
+          <ul class="exercise-list">
+            <li class="ex-link" onclick="showEx('Jump Rope','1 min per round · 3 rounds','images/face/jump-rope.jpg')"><span class="ex-name">Jump Rope</span> <strong>1 min</strong></li>
+            <li class="ex-link" onclick="showEx('Lateral Agility Hurdle Drill','30 sec per round · 3 rounds','images/face/lateral-agility-hurdle-drill.jpg')"><span class="ex-name">Lateral Agility Hurdle Drill</span> <strong>30 sec</strong></li>
+            <li class="ex-link" onclick="showEx('Box Step Over on stairs','30 sec per round · 3 rounds','images/face/seated-box-jump.jpg')"><span class="ex-name">Box Step Over on stairs</span> <strong>30 sec</strong></li>
+          </ul>
+        </div>
+        <div class="block">
+          <div class="block-label"><span class="tag tag-f">F</span> Cool-Down ~15 min</div>
+          <ul class="exercise-list">
+            <li class="ex-link" onclick="showEx('Hip Flexor Lunge','30s×4 each side','images/face/hip-flexor-lunge.jpg')"><span class="ex-name">Hip Flexor Lunge</span> <strong>30s×4 each</strong></li>
+            <li class="ex-link" onclick="showEx('Hamstrings Stretch','30s×4 each side','images/face/banded-hamstring-stretch-main.jpg')"><span class="ex-name">Hamstrings</span> <strong>30s×4 each</strong></li>
+            <li class="ex-link" onclick="showEx('Quad Stretch','30s×4 each side','images/face/quad-stretch.jpg')"><span class="ex-name">Quad</span> <strong>30s×4 each</strong></li>
+            <li class="ex-link" onclick="showEx('Calf Stretch','30s×4 each side','images/face/calf-stretch.jpg')"><span class="ex-name">Calf</span> <strong>30s×4 each</strong></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="day-card">
+      <div class="day-header">Day 2 · C1 or C3</div>
+      <div class="day-body">
+        <div class="block">
+          <div class="block-label"><span class="tag tag-f">F</span> Dynamic Warm-Up ~10 min</div>
+          <ul class="exercise-list">
+            <li class="ex-link" onclick="showEx('Hip Circles Front & Back','×10 each leg','images/face/hip-circles.jpg')"><span class="ex-name">Hip Circles</span> <strong>×10 each leg</strong></li>
+            <li class="ex-link" onclick="showEx('Deep Squats','×10','images/face/deep-squat-hold.jpg')"><span class="ex-name">Deep Squats</span> <strong>×10</strong></li>
+            <li class="ex-link" onclick="showEx('Inchworm','×5 cycles','images/face/inchworm.jpg')"><span class="ex-name">Inchworm</span> <strong>×5 cycles</strong></li>
+            <li class="ex-link" onclick="showEx('Backward Lunge with Twist','×10','images/face/backward-lunge-with-twist.jpg')"><span class="ex-name">Backward Lunge with Twist</span> <strong>×10</strong></li>
+          </ul>
+        </div>
+        <div class="block">
+          <div class="block-label"><span class="tag tag-c1">C1</span> Lower Body <em style="font-weight:400;font-size:0.7rem">(or C3 if tired)</em></div>
+          <ul class="exercise-list">
+            <li class="ex-link" onclick="showEx('Goblet Squat','3× to fatigue — 6kg KB','images/face/goblet-squat.jpg')"><span class="ex-name">Goblet Squat — 6kg KB</span> <strong>3× to fatigue</strong></li>
+            <li class="ex-link" onclick="showEx('Romanian Deadlift','3× to fatigue — 2×5kg','images/face/romanian-deadlift.jpg')"><span class="ex-name">Romanian Deadlift — 2×5kg</span> <strong>3× to fatigue</strong></li>
+            <li class="ex-link" onclick="showEx('Split Squat','3× each leg','images/face/split-squat.jpg')"><span class="ex-name">Split Squat</span> <strong>3× each leg</strong></li>
+            <li class="ex-link" onclick="showEx('Hip Bridge','3× to fatigue — BW','images/face/glute-bridge.jpg')"><span class="ex-name">Hip Bridge</span> <strong>3× to fatigue</strong></li>
+            <li class="ex-link" onclick="showEx('Banded Monster Walk','3×10 each side','images/face/banded-monster-walk.jpg')"><span class="ex-name">Banded Monster Walk</span> <strong>3×10 each side</strong></li>
+            <li class="ex-link" onclick="showEx('Calf Raise on stairs','3×15','images/face/calf-raise.jpg')"><span class="ex-name">Calf Raise on stairs</span> <strong>3×15</strong></li>
+          </ul>
+        </div>
+        <div class="block">
+          <div class="block-label"><span class="tag tag-f">F</span> Cool-Down ~15 min</div>
+          <ul class="exercise-list">
+            <li class="ex-link" onclick="showEx('Hip Flexor Lunge','30s×4 each side','images/face/hip-flexor-lunge.jpg')"><span class="ex-name">Hip Flexor Lunge</span> <strong>30s×4</strong></li>
+            <li class="ex-link" onclick="showEx('Piriformis Stretch','30s×4 each side','images/face/piriformis-stretch.jpg')"><span class="ex-name">Piriformis</span> <strong>30s×4</strong></li>
+            <li class="ex-link" onclick="showEx('Hamstrings Stretch','30s×4 each side','images/face/banded-hamstring-stretch-main.jpg')"><span class="ex-name">Hamstrings</span> <strong>30s×4</strong></li>
+            <li class="ex-link" onclick="showEx('Quad Stretch','30s×4 each side','images/face/quad-stretch.jpg')"><span class="ex-name">Quad</span> <strong>30s×4</strong></li>
+            <li class="ex-link" onclick="showEx('Calf Stretch','30s×4 each side','images/face/calf-stretch.jpg')"><span class="ex-name">Calf</span> <strong>30s×4</strong></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="day-card">
+      <div class="day-header">Day 3 · Run Zone 2</div>
+      <div class="day-body">
+        <div class="block">
+          <div class="block-label"><span class="tag tag-f">F</span> Dynamic Warm-Up ~10 min</div>
+          <ul class="exercise-list">
+            <li class="ex-link" onclick="showEx('Hip Circles Front & Back','×10 each leg','images/face/hip-circles.jpg')"><span class="ex-name">Hip Circles</span> <strong>×10 each leg</strong></li>
+            <li class="ex-link" onclick="showEx('Hip Swings Side to Side','×10 each leg','images/face/lateral-leg-swing-start.jpg')"><span class="ex-name">Hip Swings</span> <strong>×10 each leg</strong></li>
+            <li class="ex-link" onclick="showEx('High Knee to Chest Lunge','×10 each leg','images/face/knee-to-chest-stretch.jpg')"><span class="ex-name">High Knee to Chest Lunge</span> <strong>×10 each leg</strong></li>
+            <li class="ex-link" onclick="showEx('Side Shuffle','×10 each direction','images/face/side-shuffle.jpg')"><span class="ex-name">Side Shuffle</span> <strong>×10 each direction</strong></li>
+          </ul>
+        </div>
+        <div class="block">
+          <div class="block-label"><span class="tag tag-a">A</span> Zone 2 Run 45–60 min</div>
+          <ul class="exercise-list">
+            <li>HR target: <strong>181 − your age</strong></li>
+            <li>Conversational pace throughout</li>
+          </ul>
+        </div>
+        <div class="block">
+          <div class="block-label"><span class="tag tag-e">E</span> Footspeed Program 1 — 3 rounds</div>
+          <ul class="exercise-list">
+            <li class="ex-link" onclick="showEx('Jump Rope','1 min per round · 3 rounds','images/face/jump-rope.jpg')"><span class="ex-name">Jump Rope</span> <strong>1 min</strong></li>
+            <li class="ex-link" onclick="showEx('Lateral Agility Hurdle Drill','30 sec per round · 3 rounds','images/face/lateral-agility-hurdle-drill.jpg')"><span class="ex-name">Lateral Agility Hurdle Drill</span> <strong>30 sec</strong></li>
+            <li class="ex-link" onclick="showEx('Box Step Over on stairs','30 sec per round · 3 rounds','images/face/seated-box-jump.jpg')"><span class="ex-name">Box Step Over on stairs</span> <strong>30 sec</strong></li>
+          </ul>
+        </div>
+        <div class="block">
+          <div class="block-label"><span class="tag tag-f">F</span> Cool-Down ~15 min</div>
+          <ul class="exercise-list">
+            <li class="ex-link" onclick="showEx('Hip Flexor Lunge','30s×4 each side','images/face/hip-flexor-lunge.jpg')"><span class="ex-name">Hip Flexor Lunge</span> <strong>30s×4 each</strong></li>
+            <li class="ex-link" onclick="showEx('Hamstrings Stretch','30s×4 each side','images/face/banded-hamstring-stretch-main.jpg')"><span class="ex-name">Hamstrings</span> <strong>30s×4 each</strong></li>
+            <li class="ex-link" onclick="showEx('Quad Stretch','30s×4 each side','images/face/quad-stretch.jpg')"><span class="ex-name">Quad</span> <strong>30s×4 each</strong></li>
+            <li class="ex-link" onclick="showEx('Calf Stretch','30s×4 each side','images/face/calf-stretch.jpg')"><span class="ex-name">Calf</span> <strong>30s×4 each</strong></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="day-card rest-card">
+      <div class="day-header">Remaining Days · M Only</div>
+      <div class="day-body">Balance + movement snacks.<br>No structured session needed.</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════ RECOVERY WEEK ═══════════════════════════════════ -->
+<div class="week-section week-recovery">
+  <div class="week-title">💙 High Recovery Week — watch showing fatigue</div>
+  <div class="days-grid">
+
+    <div class="day-card">
+      <div class="day-header">Any Run Day · Zone 2 Only</div>
+      <div class="day-body">
+        <div class="block">
+          <div class="block-label"><span class="tag tag-f">F</span> Dynamic Warm-Up ~10 min</div>
+          <ul class="exercise-list">
+            <li class="ex-link" onclick="showEx('Hip Circles Front & Back','×10 each leg','images/face/hip-circles.jpg')"><span class="ex-name">Hip Circles</span> <strong>×10 each leg</strong></li>
+            <li class="ex-link" onclick="showEx('Hip Swings Side to Side','×10 each leg','images/face/lateral-leg-swing-start.jpg')"><span class="ex-name">Hip Swings</span> <strong>×10 each leg</strong></li>
+            <li class="ex-link" onclick="showEx('High Knee to Chest Lunge','×10 each leg','images/face/knee-to-chest-stretch.jpg')"><span class="ex-name">High Knee to Chest Lunge</span> <strong>×10 each leg</strong></li>
+            <li class="ex-link" onclick="showEx('Side Shuffle','×10 each direction','images/face/side-shuffle.jpg')"><span class="ex-name">Side Shuffle</span> <strong>×10 each direction</strong></li>
+          </ul>
+        </div>
+        <div class="block">
+          <div class="block-label"><span class="tag tag-a">A</span> Zone 2 Run — easy, 30–45 min</div>
+          <ul class="exercise-list">
+            <li>HR target: <strong>181 − your age</strong></li>
+            <li>Shorter than usual is fine</li>
+            <li><strong>No SIT this week</strong></li>
+          </ul>
+        </div>
+        <div class="block">
+          <div class="block-label"><span class="tag tag-e">E</span> Footspeed — light only</div>
+          <ul class="exercise-list">
+            <li class="ex-link" onclick="showEx('Jump Rope','1 min × 2 rounds only','images/face/jump-rope.jpg')"><span class="ex-name">Jump Rope</span> <strong>1 min × 2 rounds only</strong></li>
+            <li>Skip hurdle drill if legs feel heavy</li>
+          </ul>
+        </div>
+        <div class="block">
+          <div class="block-label"><span class="tag tag-f">F</span> Cool-Down — extend to 20 min</div>
+          <ul class="exercise-list">
+            <li>Full stretch sequence + foam roller</li>
+            <li class="ex-link" onclick="showEx('Hip Flexor Lunge','30s×4 each side','images/face/hip-flexor-lunge.jpg')"><span class="ex-name">Hip Flexor</span>, <span class="ex-name" onclick="showEx('Piriformis Stretch','30s×4 each side','images/face/piriformis-stretch.jpg')">Piriformis</span>, Hamstrings</li>
+            <li>Quad, Calf, Adductors</li>
+            <li>Chest &amp; Shoulder, Trunk Twists</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="day-card">
+      <div class="day-header">Any Weights Day · C3 Only</div>
+      <div class="day-body">
+        <div class="block">
+          <div class="block-label"><span class="tag tag-f">F</span> Dynamic Warm-Up ~10 min</div>
+          <ul class="exercise-list">
+            <li class="ex-link" onclick="showEx('Inchworm','×5 cycles','images/face/inchworm.jpg')"><span class="ex-name">Inchworm</span> <strong>×5 cycles</strong></li>
+            <li class="ex-link" onclick="showEx('Open Book Cross','×10 each side','images/face/open-book-cross.jpg')"><span class="ex-name">Open Book Cross</span> <strong>×10 each side</strong></li>
+            <li class="ex-link" onclick="showEx('Side Shuffle','×10 each direction','images/face/side-shuffle.jpg')"><span class="ex-name">Side Shuffle</span> <strong>×10 each direction</strong></li>
+          </ul>
+        </div>
+        <div class="block">
+          <div class="block-label"><span class="tag tag-c3">C3</span> Full Body / Core only</div>
+          <ul class="exercise-list">
+            <li class="ex-link" onclick="showEx('Front Plank','3× hold to fatigue','images/face/front-plank.jpg')"><span class="ex-name">Front Plank</span> <strong>3× hold to fatigue</strong></li>
+            <li class="ex-link" onclick="showEx('Side Plank (each side)','3× hold to fatigue','images/face/side-plank.jpg')"><span class="ex-name">Side Plank each side</span> <strong>3× hold to fatigue</strong></li>
+            <li class="ex-link" onclick="showEx('KB Swing','3×10 — 6kg','images/face/kettlebell-swing.jpg')"><span class="ex-name">KB Swing — 6kg</span> <strong>3×10</strong></li>
+            <li class="ex-link" onclick="showEx('Band Pallof Press','3×10 each side','images/face/cable-pallof-press.jpg')"><span class="ex-name">Band Pallof Press</span> <strong>3×10 each side</strong></li>
+            <li class="ex-link" onclick="showEx('Single-leg Balance &amp; Reach','×8 each direction','images/face/single-leg-balance.jpg')"><span class="ex-name">Single-leg Balance &amp; Reach</span> <strong>×8 each direction</strong></li>
+            <li><strong>No C1 or C2 this week</strong></li>
+          </ul>
+        </div>
+        <div class="block">
+          <div class="block-label"><span class="tag tag-f">F</span> Cool-Down + Foam Roller</div>
+          <ul class="exercise-list">
+            <li>Full stretch sequence</li>
+            <li>Extra foam rolling: quads, IT band, upper back</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="day-card rest-card">
+      <div class="day-header">All Other Days · Rest + M</div>
+      <div class="day-body">Full rest.<br>Balance + movement snacks.<br>Prioritise sleep.</div>
+    </div>
+
+  </div>
+
+  <!-- ── REPLACEMENT SESSIONS ── -->
+  <div class="replacement-section">
+    <h3>Replacement Sessions</h3>
+    <ul class="video-list">
+      <li><a href="#" onclick="openYt('yeEejwdDsD8');return false;">25 Min Full Body</a></li>
+      <li><a href="#" onclick="openYt('LhIMG4dQxe0');return false;">30 Min Full Body</a></li>
+      <li><a href="#" onclick="openYt('p9GEd5tfF-k');return false;">30 Min Full Body Dumbbell</a></li>
+      <li><a href="#" onclick="openYt('gp7N7rD481M');return false;">30 Min Dumbbell Arms</a></li>
+      <li><a href="#" onclick="openYt('OEBtDTrSEpI');return false;">30 Min Lower Body</a></li>
+      <li><a href="#" onclick="openYt('Xa969dPr3PE');return false;">20 Min Leg Workout</a></li>
+      <li><a href="#" onclick="openYt('EEYPmZQKBt4');return false;">20 Min Total Core</a></li>
+    </ul>
+    <div class="trx-link-box">
+      <h3>TRX Session</h3>
+      <a href="TRX_Cheat_Sheet/TRX_Cheat_Sheet.html">📋 Open TRX Cheat Sheet</a>
+    </div>
+  </div>
+
+</div>
+
+<p style="font-size:0.72rem; color:#999; margin-top:1.5rem;">
+  Video references: <a href="http://www.TheUnbreakableBook.com" style="color:#999;">TheUnbreakableBook.com</a> ·
+  WITY: <a href="https://q4pt.com/new-blog/the-abcs-of-iytw-jm48m" style="color:#999;">q4pt.com</a> ·
+  Pallof Press: <a href="https://www.fitloop.app/exercises/banded-pallof-press" style="color:#999;">fitloop.app</a>
+</p>
+
+<script>
+  // ── Exercise pop-up ──
+  function showEx(name, reps, imgSrc) {
+    document.getElementById('popupTitle').textContent = name;
+    document.getElementById('popupReps').textContent = reps;
+    const img = document.getElementById('popupImg');
+    const noImg = document.getElementById('popupNoImg');
+    img.style.display = 'block';
+    noImg.style.display = 'none';
+    img.src = imgSrc;
+    document.getElementById('exPopup').classList.add('active');
+  }
+
+  function closeExPopup() {
+    document.getElementById('exPopup').classList.remove('active');
+    document.getElementById('popupImg').src = '';
+  }
+
+  function closePopup(e) {
+    if (e.target === document.getElementById('exPopup')) closeExPopup();
+  }
+
+  // ── YouTube pop-up ──
+  function openYt(videoId) {
+    document.getElementById('ytFrame').src =
+      'https://www.youtube.com/embed/' + videoId + '?autoplay=1';
+    document.getElementById('ytPopup').classList.add('active');
+  }
+
+  function closeYtPopup(e) {
+    if (!e || e.target === document.getElementById('ytPopup')) {
+      document.getElementById('ytFrame').src = '';
+      document.getElementById('ytPopup').classList.remove('active');
+    }
+  }
+
+  // Close popups with Escape key
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      closeExPopup();
+      closeYtPopup();
+    }
+  });
+</script>
+
+</body>
+</html>
