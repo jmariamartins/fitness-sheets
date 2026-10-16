@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TRX Exercise Cheat Sheet</title>
+<style>
+  :root {
+    --g1: #1a5fa8;
+    --g2: #2d7a4f;
+    --g3: #7b3fa0;
+    --bg: #f5f5f0;
+    --card-bg: #ffffff;
+    --text: #1a1a1a;
+    --subtext: #555;
+    --border: #e0e0e0;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    padding: 24px 16px 48px;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  h1 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .subtitle {
+    font-size: 0.9rem;
+    color: var(--subtext);
+    margin-bottom: 28px;
+  }
+
+  /* Legend */
+  .legend {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 32px;
+    padding: 14px 16px;
+    background: #fff;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    align-items: center;
+  }
+
+  .legend-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--subtext);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-right: 4px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+  }
+
+  .legend-dot {
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* TRX marks visual */
+  .marks-bar {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    height: 20px;
+    border-radius: 10px;
+    overflow: hidden;
+    width: 240px;
+    flex-shrink: 0;
+    border: 1px solid var(--border);
+  }
+
+  .marks-seg {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.6rem;
+    font-weight: 700;
+    color: rgba(255,255,255,0.85);
+  }
+
+  /* Section headers */
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin: 32px 0 14px;
+    flex-wrap: wrap;
+  }
+
+  .section-badge {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #fff;
+    padding: 5px 14px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+  }
+
+  .section-marks {
+    font-size: 1rem;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+  }
+
+  .section-desc {
+    font-size: 0.85rem;
+    color: var(--subtext);
+  }
+
+  /* Grid */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 14px;
+  }
+
+  /* Cards */
+  .card {
+    background: var(--card-bg);
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .card-img-wrap {
+    position: relative;
+    width: 100%;
+    background: #f0f0ec;
+    overflow: hidden;
+  }
+
+  .exercise-img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .exercise-img-placeholder {
+    position: absolute;
+    inset: 0;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    color: #aaa;
+    font-size: 0.72rem;
+    text-align: center;
+    padding: 8px;
+    background: #f7f7f5;
+  }
+
+  .placeholder-icon { font-size: 1.8rem; display: block; }
+
+  .filename-tag {
+    font-size: 0.62rem;
+    font-family: monospace;
+    color: #999;
+    background: #eee;
+    border-radius: 3px;
+    padding: 1px 4px;
+    margin-top: 2px;
+    word-break: break-all;
+  }
+
+  .card-body {
+    padding: 10px 12px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    flex: 1;
+  }
+
+  .card-name {
+    font-size: 0.88rem;
+    font-weight: 700;
+    line-height: 1.25;
+  }
+
+  /* Mark badge on card */
+  .mark-badge {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #fff;
+    border-radius: 4px;
+    padding: 2px 7px;
+    margin-bottom: 2px;
+    width: fit-content;
+  }
+
+  .card-cue {
+    font-size: 0.76rem;
+    color: var(--subtext);
+    line-height: 1.4;
+  }
+
+  /* color helpers */
+  .g1 { background: var(--g1); }
+  .g2 { background: var(--g2); }
+  .g3 { background: var(--g3); }
+
+  @media print {
+    body { background: #fff; padding: 12px; }
+    .grid { grid-template-columns: repeat(4, 1fr); gap: 10px; }
+    .card { break-inside: avoid; }
+    .section-header { margin-top: 20px; }
+  }
+</style>
+</head>
+<body>
+<a href="../index.html" style="display:inline-block;margin-bottom:20px;padding:12px 24px;background:#1a5fa8;color:#fff;text-decoration:none;border-radius:8px;font-size:1.1rem;font-weight:600;">← Back to FACE Sheet</a>
+
+<h1>TRX Suspension Training</h1>
+<p class="subtitle">18 exercises · grouped and sorted by strap length mark · place images in the <code>images/</code> folder</p>
+
+<div class="legend">
+  <span class="legend-label">Strap marks:</span>
+  <div class="legend-item"><div class="legend-dot g1"></div><strong>Group 1</strong> — marks 0–2 (short)</div>
+  <div class="legend-item"><div class="legend-dot g2"></div><strong>Group 2</strong> — marks 4–6 (mid)</div>
+  <div class="legend-item"><div class="legend-dot g3"></div><strong>Group 3</strong> — marks 6.5–7 (long)</div>
+</div>
+
+<!-- ====== GROUP 1 ====== -->
+<div class="section-header">
+  <span class="section-badge g1">Group 1</span>
+  <span class="section-marks" style="color:var(--g1);">Marks 0 – 2</span>
+  <span class="section-desc">Straps short — handles high, close to anchor</span>
+</div>
+<div class="grid">
+
+  <!-- High Row 0-1 -->
+  <div class="card">
+    <div class="card-img-wrap">
+      <img class="exercise-img" src="../images/trx/high_row.jpg" alt="High Row"
+        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+      <div class="exercise-img-placeholder">
+        <span class="placeholder-icon">📷</span><span>Add image</span>
+        <span class="filename-tag">high_row.jpg</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="mark-badge g1">Mark 0–1</div>
+      <div class="card-name">High Row</div>
+      <div class="card-cue">Lean back, pull hands to forehead level, elbows high and wide. Targets upper back and rear delts.</div>
+    </div>
+  </div>
+
+  <!-- Pistol Squat 0-1 -->
+  <div class="card">
+    <div class="card-img-wrap">
+      <img class="exercise-img" src="../images/trx/pistol_squat.jpg" alt="Pistol Squat"
+        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+      <div class="exercise-img-placeholder">
+        <span class="placeholder-icon">📷</span><span>Add image</span>
+        <span class="filename-tag">pistol_squat.jpg</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="mark-badge g1">Mark 0–1</div>
+      <div class="card-name">Pistol Squat</div>
+      <div class="card-cue">Hold handles, lift one leg forward. Lower on standing leg as deep as possible. Straps assist balance.</div>
+    </div>
+  </div>
+
+  <!-- Single Arm Row + Rotation 1 -->
+  <div class="card">
+    <div class="card-img-wrap">
+      <img class="exercise-img" src="../images/trx/single_arm_row_rotation.jpg" alt="Single Arm Row + Rotation"
+        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+      <div class="exercise-img-placeholder">
+        <span class="placeholder-icon">📷</span><span>Add image</span>
+        <span class="filename-tag">single_arm_row_rotation.jpg</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="mark-badge g1">Mark 1</div>
+      <div class="card-name">Single Arm Row + Rotation</div>
+      <div class="card-cue">Single arm row — at the top, rotate torso open and reach free arm to ceiling. Control the twist back.</div>
+    </div>
+  </div>
+
+  <!-- Lunge + Overhead Reach 1 -->
+  <div class="card">
+    <div class="card-img-wrap">
+      <img class="exercise-img" src="../images/trx/lunge_overhead_reach.jpg" alt="Lunge + Overhead Reach"
+        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+      <div class="exercise-img-placeholder">
+        <span class="placeholder-icon">📷</span><span>Add image</span>
+        <span class="filename-tag">lunge_overhead_reach.jpg</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="mark-badge g1">Mark 1</div>
+      <div class="card-name">Lunge + Overhead Reach</div>
+      <div class="card-cue">Step into reverse lunge, simultaneously reach both arms overhead through the straps. Great hip flexor opener.</div>
+    </div>
+  </div>
+
+  <!-- Squat 1 -->
+  <div class="card">
+    <div class="card-img-wrap">
+      <img class="exercise-img" src="../images/trx/squat.jpg" alt="Squat"
+        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+      <div class="exercise-img-placeholder">
+        <span class="placeholder-icon">📷</span><span>Add image</span>
+        <span class="filename-tag">squat.jpg</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="mark-badge g1">Mark 1</div>
+      <div class="card-name">Squat</div>
+      <div class="card-cue">Face anchor, hold handles. Sit back and down, use straps for balance and depth assist. Drive through heels.</div>
+    </div>
+  </div>
+
+  <!-- Bicep Curl 1-2 -->
+  <div class="card">
+    <div class="card-img-wrap">
+      <img class="exercise-img" src="../images/trx/bicep_curl.jpg" alt="Bicep Curl"
+        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+      <div class="exercise-img-placeholder">
+        <span class="placeholder-icon">📷</span><span>Add image</span>
+        <span class="filename-tag">bicep_curl.jpg</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="mark-badge g1">Mark 1–2</div>
+      <div class="card-name">Bicep Curl</div>
+      <div class="card-cue">Face anchor, lean back, palms up. Curl hands to temples keeping elbows high. Lower slowly.</div>
+    </div>
+  </div>
+
+  <!-- Tricep Extension 1-2 -->
+  <div class="card">
+    <div class="card-img-wrap">
+      <img class="exercise-img" src="../images/trx/tricep_extension.jpg" alt="Tricep Extension"
+        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+      <div class="exercise-img-placeholder">
+        <span class="placeholder-icon">📷</span><span>Add image</span>
+        <span class="filename-tag">tricep_extension.jpg</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="mark-badge g1">Mark 1–2</div>
+      <div class="card-name">Tricep Extension</div>
+      <div class="card-cue">Face away, handles overhead. Lean forward, bend elbows so forehead moves toward hands. Extend arms back.</div>
+    </div>
+  </div>
+
+</div><!-- /GROUP 1 -->
+
+<!-- ====== GROUP 2 ====== -->
+<div class="section-header">
+  <span class="section-badge g2">Group 2</span>
+  <span class="section-marks" style="color:var(--g2);">Marks 4 – 6</span>
+  <span class="section-desc">Straps mid-length — handles at roughly waist to chest height</span>
+</div>
+<div class="grid">
+
+  <!-- Supine Row 4 -->
+  <div class="card">
+    <div class="card-img-wrap">
+      <img class="exercise-img" src="../images/trx/supine_row.jpg" alt="Supine Row"
+        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+      <div class="exercise-img-placeholder">
+        <span class="placeholder-icon">📷</span><span>Add image</span>
+        <span class="filename-tag">supine_row.jpg</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="mark-badge g2">Mark 4</div>
+      <div class="card-name">Supine Row</div>
+      <div class="card-cue">Lie on back, hold handles overhead, heels on floor. Pull chest up to handles keeping body straight.</div>
+    </div>
+  </div>
+
+  <!-- Chest Press 4-5 -->
+  <div class="card">
+    <div class="card-img-wrap">
+      <img class="exercise-img" src="../images/trx/chest_press.jpg" alt="Chest Press"
+        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+      <div class="exercise-img-placeholder">
+        <span class="placeholder-icon">📷</span><span>Add image</span>
+        <span class="filename-tag">chest_press.jpg</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="mark-badge g2">Mark 4–5</div>
+      <div class="card-name">Chest Press</div>
+      <div class="card-cue">Face away from anchor, handles at chest. Lean forward, lower chest between handles, press back up.</div>
+    </div>
+  </div>
+
+  <!-- Kneeling Pull 4-5 -->
+  <div class="card">
+    <div class="card-img-wrap">
+      <img class="exercise-img" src="../images/trx/kneeling_pull.jpg" alt="Kneeling Pull"
+        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+      <div class="exercise-img-placeholder">
+        <span class="placeholder-icon">📷</span><span>Add image</span>
+        <span class="filename-tag">kneeling_pull.jpg</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="mark-badge g2">Mark 4–5</div>
+      <div class="card-name">Kneeling Pull</div>
+      <div class="card-cue">Kneel facing anchor, handles high. Pull body forward and up keeping core braced.</div>
+    </div>
+  </div>
+
+  <!-- Overhead Pull 5 -->
+  <div class="card">
+    <div class="card-img-wrap">
+      <img class="exercise-img" src="../images/trx/overhead_pull.jpg" alt="Overhead Pull"
+        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+      <div class="exercise-img-placeholder">
+        <span class="placeholder-icon">📷</span><span>Add image</span>
+        <span class="filename-tag">overhead_pull.jpg</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="mark-badge g2">Mark 5</div>
+      <div class="card-name">Overhead Pull</div>
+      <div class="card-cue">Lean away from anchor, arm extended overhead. Pull arm down and through. Targets lat and oblique.</div>
+    </div>
+  </div>
+
+  <!-- Lat Pull 5 -->
+  <div class="card">
+    <div class="card-img-wrap">
+      <img class="exercise-img" src="../images/trx/lat_pull.jpg" alt="Lat Pull"
+        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+      <div class="exercise-img-placeholder">
+        <span class="placeholder-icon">📷</span><span>Add image</span>
+        <span class="filename-tag">lat_pull.jpg</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="mark-badge g2">Mark 5</div>
+      <div class="card-name">Lat Pull</div>
+      <div class="card-cue">Arms extended overhead holding handles. Pull arms down and back, driving elbows to hips. Squeeze lats at bottom.</div>
+    </div>
+  </div>
+
+  <!-- Chest Fly 5 -->
+  <div class="card">
+    <div class="card-img-wrap">
+      <img class="exercise-img" src="../images/trx/chest_fly.jpg" alt="Chest Fly"
+        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+      <div class="exercise-img-placeholder">
+        <span class="placeholder-icon">📷</span><span>Add image</span>
+        <span class="filename-tag">chest_fly.jpg</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="mark-badge g2">Mark 5</div>
+      <div class="card-name">Chest Fly</div>
+      <div class="card-cue">Face away, arms wide and extended forward. Let them open to sides, then squeeze together at chest height.</div>
+    </div>
+  </div>
+
+  <!-- Hamstring Curl 5-6 -->
+  <div class="card">
+    <div class="card-img-wrap">
+      <img class="exercise-img" src="../images/trx/hamstring_curl.jpg" alt="Hamstring Curl"
+        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+      <div class="exercise-img-placeholder">
+        <span class="placeholder-icon">📷</span><span>Add image</span>
+        <span class="filename-tag">hamstring_curl.jpg</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="mark-badge g2">Mark 5–6</div>
+      <div class="card-name">Hamstring Curl</div>
+      <div class="card-cue">Lie on back, heels in cradles. Bridge up, curl heels to glutes. Keep hips level throughout.</div>
+    </div>
+  </div>
+
+</div><!-- /GROUP 2 -->
+
+<!-- ====== GROUP 3 ====== -->
+<div class="section-header">
+  <span class="section-badge g3">Group 3</span>
+  <span class="section-marks" style="color:var(--g3);">Marks 6.5 – 7</span>
+  <span class="section-desc">Straps long — handles low, close to floor</span>
+</div>
+<div class="grid">
+
+  <!-- Pike 6.5 -->
+  <div class="card">
+    <div class="card-img-wrap">
+      <img class="exercise-img" src="../images/trx/pike.jpg" alt="Pike"
+        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+      <div class="exercise-img-placeholder">
+        <span class="placeholder-icon">📷</span><span>Add image</span>
+        <span class="filename-tag">pike.jpg</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="mark-badge g3">Mark 6.5</div>
+      <div class="card-name">Pike</div>
+      <div class="card-cue">Start in plank, feet in cradles. Drive hips up toward ceiling keeping legs straight.</div>
+    </div>
+  </div>
+
+  <!-- Lateral Knee Tuck 6.5 -->
+  <div class="card">
+    <div class="card-img-wrap">
+      <img class="exercise-img" src="../images/trx/lateral_knee_tuckL.jpg" alt="Lateral Knee Tuck"
+        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+      <div class="exercise-img-placeholder">
+        <span class="placeholder-icon">📷</span><span>Add image</span>
+        <span class="filename-tag">lateral_knee_tuckL.jpg</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="mark-badge g3">Mark 6.5</div>
+      <div class="card-name">Lateral Knee Tuck</div>
+      <div class="card-cue">Plank with feet in cradles. Drive both knees together laterally toward one side. Return and repeat other side.</div>
+    </div>
+  </div>
+
+  <!-- Mountain Climber 7 -->
+  <div class="card">
+    <div class="card-img-wrap">
+      <img class="exercise-img" src="../images/trx/mountain_climber.jpg" alt="Mountain Climber"
+        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+      <div class="exercise-img-placeholder">
+        <span class="placeholder-icon">📷</span><span>Add image</span>
+        <span class="filename-tag">mountain_climber.jpg</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="mark-badge g3">Mark 7</div>
+      <div class="card-name">Mountain Climber</div>
+      <div class="card-cue">Plank with feet in cradles. Drive knees alternately toward chest. Keep hips from bouncing.</div>
+    </div>
+  </div>
+
+  <!-- Lateral Lunge + Touch 7 -->
+  <div class="card">
+    <div class="card-img-wrap">
+      <img class="exercise-img" src="../images/trx/lateral_lunge_touch_L.jpg" alt="Lateral Lunge + Touch"
+        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+      <div class="exercise-img-placeholder">
+        <span class="placeholder-icon">📷</span><span>Add image</span>
+        <span class="filename-tag">lateral_lunge_touch_L.jpg</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="mark-badge g3">Mark 7</div>
+      <div class="card-name">Lateral Lunge + Touch</div>
+      <div class="card-cue">Hold handles for balance. Step wide to one side, sink into lunge, touch the floor. Drive back to center.</div>
+    </div>
+  </div>
+
+</div><!-- /GROUP 3 -->
+
+<p style="margin-top:40px; font-size:0.75rem; color:#aaa; text-align:center;">
+  Place your images in the <code>images/</code> folder using the exact filenames shown · File → Print → Save as PDF
+</p>
+
+</body>
+</html>
