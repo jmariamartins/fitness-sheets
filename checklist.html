@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weekly Exercise Checklist</title>
+<style>
+  :root {
+    --bg: #f0ede8;
+    --card: #ffffff;
+    --text: #1a1a1a;
+    --sub: #666;
+    --border: #e0dcd6;
+    --balanced: #2d6a4f;
+    --balanced-bg: #e8f5ee;
+    --balanced-head: #1e4d38;
+    --busy: #c05c00;
+    --busy-bg: #fef3e8;
+    --busy-head: #8a3f00;
+    --recovery: #3a5f80;
+    --recovery-bg: #e8f0f8;
+    --recovery-head: #2a4560;
+    --check-size: 22px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.5;
+    padding: 0 0 60px;
+  }
+
+  /* ── Top bar ── */
+  .top-bar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: #1a1a1a;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    gap: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+
+  .top-bar h1 {
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    flex: 1;
+  }
+
+  .btn-back {
+    background: #333;
+    color: #fff;
+    border: none;
+    border-radius: 7px;
+    padding: 8px 14px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .btn-clear {
+    background: #c0392b;
+    color: #fff;
+    border: none;
+    border-radius: 7px;
+    padding: 8px 14px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .btn-back:active, .btn-clear:active { opacity: 0.75; }
+
+  /* ── Progress bar ── */
+  .progress-bar-wrap {
+    background: #333;
+    padding: 0 16px 10px;
+    background: #1a1a1a;
+  }
+
+  .progress-track {
+    background: #444;
+    border-radius: 99px;
+    height: 6px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: #4caf80;
+    border-radius: 99px;
+    transition: width 0.3s ease;
+    width: 0%;
+  }
+
+  .progress-label {
+    font-size: 0.72rem;
+    color: #aaa;
+    margin-top: 5px;
+    text-align: right;
+  }
+
+  /* ── Week sections ── */
+  .week-section {
+    margin: 16px 12px 0;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+
+  .week-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    padding: 13px 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    user-select: none;
+  }
+
+  .week-title .toggle-icon {
+    font-size: 0.8rem;
+    opacity: 0.6;
+    transition: transform 0.2s;
+  }
+
+  .week-title.collapsed .toggle-icon { transform: rotate(-90deg); }
+
+  .week-balanced .week-title  { background: var(--balanced-bg); color: var(--balanced-head); }
+  .week-busy     .week-title  { background: var(--busy-bg);     color: var(--busy-head); }
+  .week-recovery .week-title  { background: var(--recovery-bg); color: var(--recovery-head); }
+
+  .week-body { background: var(--card); }
+  .week-body.collapsed { display: none; }
+
+  /* ── Day groups ── */
+  .day-group {
+    border-top: 1px solid var(--border);
+  }
+
+  .day-group:first-child { border-top: none; }
+
+  .day-name {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--sub);
+    padding: 10px 16px 4px;
+  }
+
+  /* ── Block labels ── */
+  .block-label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--sub);
+    padding: 6px 16px 3px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* Tags */
+  .tag {
+    display: inline-block;
+    font-size: 0.6rem;
+    font-weight: 800;
+    border-radius: 3px;
+    padding: 1px 5px;
+    letter-spacing: 0.5px;
+    color: #fff;
+    flex-shrink: 0;
+  }
+  .tag-f  { background: #888; }
+  .tag-c1 { background: #2d6a4f; }
+  .tag-c2 { background: #1a5fa8; }
+  .tag-c3 { background: #7b3fa0; }
+  .tag-a  { background: #d4860a; }
+  .tag-e  { background: #c0392b; }
+
+  /* ── Checklist items ── */
+  .check-list {
+    list-style: none;
+    padding: 2px 0 8px;
+  }
+
+  .check-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 7px 16px;
+    border-radius: 0;
+    transition: background 0.15s;
+    cursor: pointer;
+  }
+
+  .check-item:active { background: #f5f5f5; }
+
+  .check-item input[type="checkbox"] {
+    width: var(--check-size);
+    height: var(--check-size);
+    flex-shrink: 0;
+    accent-color: #2d6a4f;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+
+  .week-busy .check-item input[type="checkbox"] { accent-color: var(--busy); }
+  .week-recovery .check-item input[type="checkbox"] { accent-color: var(--recovery); }
+
+  .check-item label {
+    cursor: pointer;
+    flex: 1;
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .ex-label { font-weight: 500; }
+  .ex-reps  { font-size: 0.82rem; color: var(--sub); }
+
+  /* Checked state */
+  .check-item.done label .ex-label {
+    text-decoration: line-through;
+    color: #bbb;
+  }
+
+  .check-item.done label .ex-reps { color: #ccc; }
+
+  /* Static info lines (no checkbox) */
+  .info-line {
+    padding: 4px 16px 4px 48px;
+    font-size: 0.82rem;
+    color: var(--sub);
+    line-height: 1.4;
+  }
+
+  /* ── Replacement sessions section ── */
+  .replacement-section {
+    margin: 16px 12px 0;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    background: var(--card);
+  }
+
+  .replacement-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    padding: 13px 16px;
+    background: #f5f5f5;
+    color: #333;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* ── Confirm dialog ── */
+  .confirm-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .confirm-overlay.active { display: flex; }
+
+  .confirm-box {
+    background: #fff;
+    border-radius: 14px;
+    padding: 24px 20px 20px;
+    max-width: 320px;
+    width: 100%;
+    text-align: center;
+  }
+
+  .confirm-box h2 { font-size: 1.1rem; margin-bottom: 8px; }
+  .confirm-box p { font-size: 0.88rem; color: #555; margin-bottom: 20px; }
+
+  .confirm-btns {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+  }
+
+  .btn-cancel {
+    background: #eee;
+    color: #333;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 22px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    flex: 1;
+  }
+
+  .btn-confirm-clear {
+    background: #c0392b;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 22px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    flex: 1;
+  }
+</style>
+</head>
+<body>
+
+<!-- ── Top bar ── -->
+<div class="top-bar">
+  <a href="index.html" class="btn-back">← FACE Sheet</a>
+  <h1>Weekly Checklist</h1>
+  <button class="btn-clear" onclick="confirmClear()">Clear all</button>
+</div>
+<div class="progress-bar-wrap">
+  <div class="progress-track">
+    <div class="progress-fill" id="progressFill"></div>
+  </div>
+  <div class="progress-label" id="progressLabel">0 / 0 done</div>
+</div>
+
+<!-- ════════════════════ BALANCED WEEK ════════════════════ -->
+<div class="week-section week-balanced">
+  <div class="week-title" onclick="toggleWeek(this)">
+    ⚡ Balanced Week — 4 structured sessions
+    <span class="toggle-icon">▼</span>
+  </div>
+  <div class="week-body">
+
+    <!-- DAY 1 -->
+    <div class="day-group">
+      <div class="day-name">Day 1 · C1 Lower Body</div>
+
+      <div class="block-label"><span class="tag tag-f">F</span> Dynamic Warm-Up</div>
+      <ul class="check-list">
+        <li class="check-item"><input type="checkbox" id="b-d1-1"><label for="b-d1-1"><span class="ex-label">Hip Circles Front &amp; Back</span><span class="ex-reps">×10 each leg</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d1-2"><label for="b-d1-2"><span class="ex-label">Hip Swings Side to Side</span><span class="ex-reps">×10 each leg</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d1-3"><label for="b-d1-3"><span class="ex-label">Deep Squats</span><span class="ex-reps">×10</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d1-4"><label for="b-d1-4"><span class="ex-label">Open Book Cross</span><span class="ex-reps">×10 each side</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d1-5"><label for="b-d1-5"><span class="ex-label">Inchworm</span><span class="ex-reps">×5 cycles</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d1-6"><label for="b-d1-6"><span class="ex-label">Heel &amp; Toe Walks</span><span class="ex-reps">×10 steps each</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d1-7"><label for="b-d1-7"><span class="ex-label">High Knee to Chest Lunge</span><span class="ex-reps">×10 each leg</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d1-8"><label for="b-d1-8"><span class="ex-label">Side Shuffle</span><span class="ex-reps">×10 each direction</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d1-9"><label for="b-d1-9"><span class="ex-label">High Knee Rhythm Bounding</span><span class="ex-reps">×10</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d1-10"><label for="b-d1-10"><span class="ex-label">Backward Lunge with Twist</span><span class="ex-reps">×10</span></label></li>
+      </ul>
+
+      <div class="block-label"><span class="tag tag-c1">C1</span> Lower Body</div>
+      <ul class="check-list">
+        <li class="check-item"><input type="checkbox" id="b-d1-11"><label for="b-d1-11"><span class="ex-label">Goblet Squat — 6kg KB</span><span class="ex-reps">3× to fatigue</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d1-12"><label for="b-d1-12"><span class="ex-label">Romanian Deadlift — 2×5kg</span><span class="ex-reps">3× to fatigue</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d1-13"><label for="b-d1-13"><span class="ex-label">Split Squat — BW or 3kg</span><span class="ex-reps">3× each leg</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d1-14"><label for="b-d1-14"><span class="ex-label">Hip Bridge — BW</span><span class="ex-reps">3× to fatigue</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d1-15"><label for="b-d1-15"><span class="ex-label">Banded Monster Walk</span><span class="ex-reps">3×10 each side</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d1-16"><label for="b-d1-16"><span class="ex-label">Calf Raise on stairs</span><span class="ex-reps">3×15</span></label></li>
+      </ul>
+
+      <div class="block-label"><span class="tag tag-f">F</span> Cool-Down</div>
+      <ul class="check-list">
+        <li class="check-item"><input type="checkbox" id="b-d1-17"><label for="b-d1-17"><span class="ex-label">Hip Flexor Lunge</span><span class="ex-reps">30s×4 each</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d1-18"><label for="b-d1-18"><span class="ex-label">Piriformis Stretch</span><span class="ex-reps">30s×4 each</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d1-19"><label for="b-d1-19"><span class="ex-label">Hamstrings Stretch</span><span class="ex-reps">30s×4 each</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d1-20"><label for="b-d1-20"><span class="ex-label">Quad Stretch</span><span class="ex-reps">30s×4 each</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d1-21"><label for="b-d1-21"><span class="ex-label">Calf Stretch</span><span class="ex-reps">30s×4 each</span></label></li>
+      </ul>
+    </div>
+
+    <!-- DAY 2 -->
+    <div class="day-group">
+      <div class="day-name">Day 2 · Run Zone 2</div>
+
+      <div class="block-label"><span class="tag tag-f">F</span> Dynamic Warm-Up</div>
+      <ul class="check-list">
+        <li class="check-item"><input type="checkbox" id="b-d2-1"><label for="b-d2-1"><span class="ex-label">Hip Circles Front &amp; Back</span><span class="ex-reps">×10 each leg</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d2-2"><label for="b-d2-2"><span class="ex-label">Hip Swings Side to Side</span><span class="ex-reps">×10 each leg</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d2-3"><label for="b-d2-3"><span class="ex-label">Deep Squats</span><span class="ex-reps">×10</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d2-4"><label for="b-d2-4"><span class="ex-label">High Knee to Chest Lunge</span><span class="ex-reps">×10 each leg</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d2-5"><label for="b-d2-5"><span class="ex-label">Side Shuffle</span><span class="ex-reps">×10 each direction</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d2-6"><label for="b-d2-6"><span class="ex-label">High Knee Rhythm Bounding</span><span class="ex-reps">×10</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d2-7"><label for="b-d2-7"><span class="ex-label">Inchworm</span><span class="ex-reps">×5 cycles</span></label></li>
+      </ul>
+
+      <div class="block-label"><span class="tag tag-a">A</span> Zone 2 Run 45–60 min</div>
+      <ul class="check-list">
+        <li class="check-item"><input type="checkbox" id="b-d2-8"><label for="b-d2-8"><span class="ex-label">Zone 2 Run</span><span class="ex-reps">45–60 min conversational pace</span></label></li>
+      </ul>
+
+      <div class="block-label"><span class="tag tag-e">E</span> Footspeed Program 1 — 3 rounds</div>
+      <ul class="check-list">
+        <li class="check-item"><input type="checkbox" id="b-d2-9"><label for="b-d2-9"><span class="ex-label">Jump Rope</span><span class="ex-reps">1 min · 3 rounds</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d2-10"><label for="b-d2-10"><span class="ex-label">Lateral Agility Hurdle Drill</span><span class="ex-reps">30 sec · 3 rounds</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d2-11"><label for="b-d2-11"><span class="ex-label">Box Step Over on stairs</span><span class="ex-reps">30 sec · 3 rounds</span></label></li>
+      </ul>
+
+      <div class="block-label"><span class="tag tag-f">F</span> Cool-Down</div>
+      <ul class="check-list">
+        <li class="check-item"><input type="checkbox" id="b-d2-12"><label for="b-d2-12"><span class="ex-label">Hip Flexor Lunge</span><span class="ex-reps">30s×4 each</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d2-13"><label for="b-d2-13"><span class="ex-label">Piriformis Stretch</span><span class="ex-reps">30s×4 each</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d2-14"><label for="b-d2-14"><span class="ex-label">Hamstrings Stretch</span><span class="ex-reps">30s×4 each</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d2-15"><label for="b-d2-15"><span class="ex-label">Quad Stretch</span><span class="ex-reps">30s×4 each</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d2-16"><label for="b-d2-16"><span class="ex-label">Calf Stretch</span><span class="ex-reps">30s×4 each</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d2-17"><label for="b-d2-17"><span class="ex-label">Adductors / Butterfly</span><span class="ex-reps">30s×4</span></label></li>
+      </ul>
+    </div>
+
+    <!-- DAY 3 -->
+    <div class="day-group">
+      <div class="day-name">Day 3 · C2 Upper Body</div>
+
+      <div class="block-label"><span class="tag tag-f">F</span> Dynamic Warm-Up</div>
+      <ul class="check-list">
+        <li class="check-item"><input type="checkbox" id="b-d3-1"><label for="b-d3-1"><span class="ex-label">WITY Rotator Cuff — no weight</span><span class="ex-reps">×4 each shape</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d3-2"><label for="b-d3-2"><span class="ex-label">Band Pull-Aparts</span><span class="ex-reps">×10</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d3-3"><label for="b-d3-3"><span class="ex-label">Arm Circles</span><span class="ex-reps">×10 each direction</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d3-4"><label for="b-d3-4"><span class="ex-label">Open Book Cross</span><span class="ex-reps">×10 each side</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d3-5"><label for="b-d3-5"><span class="ex-label">Inchworm</span><span class="ex-reps">×5 cycles</span></label></li>
+      </ul>
+
+      <div class="block-label"><span class="tag tag-c2">C2</span> Upper Body</div>
+      <ul class="check-list">
+        <li class="check-item"><input type="checkbox" id="b-d3-6"><label for="b-d3-6"><span class="ex-label">Push-Up — full or bent knee</span><span class="ex-reps">3× to fatigue</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d3-7"><label for="b-d3-7"><span class="ex-label">Band Row (anchored)</span><span class="ex-reps">3× to fatigue</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d3-8"><label for="b-d3-8"><span class="ex-label">DB Shoulder Press — 2×5kg</span><span class="ex-reps">3× to fatigue</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d3-9"><label for="b-d3-9"><span class="ex-label">Bicep Curl — 2×5kg</span><span class="ex-reps">3× to fatigue</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d3-10"><label for="b-d3-10"><span class="ex-label">Band Tricep Push-Down</span><span class="ex-reps">3× to fatigue</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d3-11"><label for="b-d3-11"><span class="ex-label">WITY — 3kg or no weight</span><span class="ex-reps">3×4 each shape</span></label></li>
+      </ul>
+
+      <div class="block-label"><span class="tag tag-f">F</span> Cool-Down</div>
+      <ul class="check-list">
+        <li class="check-item"><input type="checkbox" id="b-d3-12"><label for="b-d3-12"><span class="ex-label">Chest &amp; Shoulder Stretch — strap</span><span class="ex-reps">30s×4</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d3-13"><label for="b-d3-13"><span class="ex-label">Triceps Stretch — strap</span><span class="ex-reps">30s×4 each</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d3-14"><label for="b-d3-14"><span class="ex-label">Trunk Twists — strap</span><span class="ex-reps">30s×4 each</span></label></li>
+      </ul>
+    </div>
+
+    <!-- DAY 5 -->
+    <div class="day-group">
+      <div class="day-name">Day 5 · Run + SIT ⚠️ watch must be green</div>
+
+      <div class="block-label"><span class="tag tag-f">F</span> Dynamic Warm-Up</div>
+      <ul class="check-list">
+        <li class="check-item"><input type="checkbox" id="b-d5-1"><label for="b-d5-1"><span class="ex-label">Hip Circles Front &amp; Back</span><span class="ex-reps">×10 each leg</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d5-2"><label for="b-d5-2"><span class="ex-label">Hip Swings Side to Side</span><span class="ex-reps">×10 each leg</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d5-3"><label for="b-d5-3"><span class="ex-label">Deep Squats</span><span class="ex-reps">×10</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d5-4"><label for="b-d5-4"><span class="ex-label">High Knee to Chest Lunge</span><span class="ex-reps">×10 each leg</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d5-5"><label for="b-d5-5"><span class="ex-label">Side Shuffle</span><span class="ex-reps">×10 each direction</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d5-6"><label for="b-d5-6"><span class="ex-label">High Knee Rhythm Bounding</span><span class="ex-reps">×10</span></label></li>
+      </ul>
+
+      <div class="block-label"><span class="tag tag-a">A</span> Zone 2 Run + SIT</div>
+      <ul class="check-list">
+        <li class="check-item"><input type="checkbox" id="b-d5-7"><label for="b-d5-7"><span class="ex-label">Zone 2 Run</span><span class="ex-reps">45 min</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d5-8"><label for="b-d5-8"><span class="ex-label">SIT — 4×30 sec MAX sprint</span><span class="ex-reps">2–3 min walk between</span></label></li>
+      </ul>
+
+      <div class="block-label"><span class="tag tag-e">E</span> Footspeed Program 1 — 3 rounds</div>
+      <ul class="check-list">
+        <li class="check-item"><input type="checkbox" id="b-d5-9"><label for="b-d5-9"><span class="ex-label">Jump Rope</span><span class="ex-reps">1 min · 3 rounds</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d5-10"><label for="b-d5-10"><span class="ex-label">Lateral Agility Hurdle Drill</span><span class="ex-reps">30 sec · 3 rounds</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d5-11"><label for="b-d5-11"><span class="ex-label">Box Step Over on stairs</span><span class="ex-reps">30 sec · 3 rounds</span></label></li>
+      </ul>
+
+      <div class="block-label"><span class="tag tag-f">F</span> Cool-Down</div>
+      <ul class="check-list">
+        <li class="check-item"><input type="checkbox" id="b-d5-12"><label for="b-d5-12"><span class="ex-label">Hip Flexor Lunge</span><span class="ex-reps">30s×4 each</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d5-13"><label for="b-d5-13"><span class="ex-label">Piriformis Stretch</span><span class="ex-reps">30s×4 each</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d5-14"><label for="b-d5-14"><span class="ex-label">Hamstrings Stretch</span><span class="ex-reps">30s×4 each</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d5-15"><label for="b-d5-15"><span class="ex-label">Quad Stretch</span><span class="ex-reps">30s×4 each</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d5-16"><label for="b-d5-16"><span class="ex-label">Calf Stretch</span><span class="ex-reps">30s×4 each</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d5-17"><label for="b-d5-17"><span class="ex-label">Adductors / Butterfly</span><span class="ex-reps">30s×4</span></label></li>
+      </ul>
+    </div>
+
+    <!-- DAY 6 -->
+    <div class="day-group">
+      <div class="day-name">Day 6 · C3 Full Body / Core</div>
+
+      <div class="block-label"><span class="tag tag-f">F</span> Dynamic Warm-Up</div>
+      <ul class="check-list">
+        <li class="check-item"><input type="checkbox" id="b-d6-1"><label for="b-d6-1"><span class="ex-label">Inchworm</span><span class="ex-reps">×5 cycles</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d6-2"><label for="b-d6-2"><span class="ex-label">Open Book Cross</span><span class="ex-reps">×10 each side</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d6-3"><label for="b-d6-3"><span class="ex-label">Side Shuffle</span><span class="ex-reps">×10 each direction</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d6-4"><label for="b-d6-4"><span class="ex-label">Backward Lunge with Twist</span><span class="ex-reps">×10</span></label></li>
+      </ul>
+
+      <div class="block-label"><span class="tag tag-c3">C3</span> Full Body / Core</div>
+      <ul class="check-list">
+        <li class="check-item"><input type="checkbox" id="b-d6-5"><label for="b-d6-5"><span class="ex-label">Front Plank</span><span class="ex-reps">3× hold to fatigue</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d6-6"><label for="b-d6-6"><span class="ex-label">Side Plank each side</span><span class="ex-reps">3× hold to fatigue</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d6-7"><label for="b-d6-7"><span class="ex-label">KB Swing — 6kg</span><span class="ex-reps">3×10</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d6-8"><label for="b-d6-8"><span class="ex-label">Band Pallof Press</span><span class="ex-reps">3×10 each side</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d6-9"><label for="b-d6-9"><span class="ex-label">Single-leg Balance &amp; Reach (clock)</span><span class="ex-reps">×8 each direction each foot</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d6-10"><label for="b-d6-10"><span class="ex-label">Backward Lunge with Twist</span><span class="ex-reps">3×10 each leg</span></label></li>
+      </ul>
+
+      <div class="block-label"><span class="tag tag-f">F</span> Cool-Down</div>
+      <ul class="check-list">
+        <li class="check-item"><input type="checkbox" id="b-d6-11"><label for="b-d6-11"><span class="ex-label">Hip Flexor Lunge</span><span class="ex-reps">30s×4 each</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d6-12"><label for="b-d6-12"><span class="ex-label">Piriformis Stretch</span><span class="ex-reps">30s×4 each</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d6-13"><label for="b-d6-13"><span class="ex-label">Hamstrings Stretch</span><span class="ex-reps">30s×4 each</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d6-14"><label for="b-d6-14"><span class="ex-label">Adductors / Butterfly</span><span class="ex-reps">30s×4</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d6-15"><label for="b-d6-15"><span class="ex-label">Chest &amp; Shoulder Stretch</span><span class="ex-reps">30s×4</span></label></li>
+        <li class="check-item"><input type="checkbox" id="b-d6-16"><label for="b-d6-16"><span class="ex-label">Trunk Twists</span><span class="ex-reps">30s×4 each</span></label></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+<!-- ════════════════════ BUSY WEEK ════════════════════ -->
+<div class="week-section week-busy">
+  <div class="week-title" onclick="toggleWeek(this)">
+    🗓 Busy Week — 3 structured sessions
+    <span class="toggle-icon">▼</span>
+  </div>
+  <div class="week-body">
+
+    <!-- DAY 1 -->
+    <div class="day-group">
+      <div class="day-name">Day 1 · Run Zone 2</div>
+
+      <div class="block-label"><span class="tag tag-f">F</span> Dynamic Warm-Up</div>
+      <ul class="check-list">
+        <li class="check-item"><input type="checkbox" id="bz-d1-1"><label for="bz-d1-1"><span class="ex-label">Hip Circles</span><span class="ex-reps">×10 each leg</span></label></li>
+        <li class="check-item"><input type="checkbox" id="bz-d1-2"><label for="bz-d1-2"><span class="ex-label">Hip Swings</span><span class="ex-reps">×10 each leg</span></label></li>
+        <li class="check-item"><input type="checkbox" id="bz-d1-3"><label for="bz-d1-3"><span class="ex-label">High Knee to Chest Lunge</span><span class="ex-reps">×10 each leg</span></label></li>
+        <li class="check-item"><input type="checkbox" id="bz-d1-4"><label for="bz-d1-4"><span class="ex-label">Side Shuffle</span><span class="ex-reps">×10 each direction</span></label></li>
+        <li class="check-item"><input type="checkbox" id="bz-d1-5"><label for="bz-d1-5"><span class="ex-label">High Knee Rhythm Bounding</span><span class="ex-reps">×10</span></label></li>
+      </ul>
+
+      <div class="block-label"><span class="tag tag-a">A</span> Zone 2 Run 45–60 min</div>
+      <ul class="check-list">
+        <li class="check-item"><input type="checkbox" id="bz-d1-6"><label for="bz-d1-6"><span class="ex-label">Zone 2 Run</span><span class="ex-reps">45–60 min conversational pace</span></label></li>
+      </ul>
+
+      <div class="block-label"><span class="tag tag-e">E</span> Footspeed Program 1 — 3 rounds</div>
+      <ul class="check-list">
+        <li class="check-item"><input type="checkbox" id="bz-d1-7"><label for="bz-d1-7"><span class="ex-label">Jump Rope</span><span class="ex-reps">1 min · 3 rounds</span></label></li>
+        <li class="check-item"><input type="checkbox" id="bz-d1-8"><label for="bz-d1-8"><span class="ex-label">Lateral Agility Hurdle Drill</span><span class="ex-reps">30 sec · 3 rounds</span></label></li>
+        <li class="check-item"><input type="checkbox" id="bz-d1-9"><label for="bz-d1-9"><span class="ex-label">Box Step Over on stairs</span><span class="ex-reps">30 sec · 3 rounds</span></label></li>
+      </ul>
+
+      <div class="block-label"><span class="tag tag-f">F</span> Cool-Down</div>
+      <ul class="check-list">
+        <li class="check-item"><input type="checkbox" id="bz-d1-10"><label for="bz-d1-10"><span class="ex-label">Hip Flexor Lunge</span><span class="ex-reps">30s×4 each</span></label></li>
+        <li class="check-item"><input type="checkbox" id="bz-d1-11"><label for="bz-d1-11"><span class="ex-label">Hamstrings</span><span class="ex-reps">30s×4 each</span></label></li>
+        <li class="check-item"><input type="checkbox" id="bz-d1-12"><label for="bz-d1-12"><span class="ex-label">Quad</span><span class="ex-reps">30s×4 each</span></label></li>
+        <li class="check-item"><input type="checkbox" id="bz-d1-13"><label for="bz-d1-13"><span class="ex-label">Calf</span><span class="ex-reps">30s×4 each</span></label></li>
+      </ul>
+    </div>
+
+    <!-- DAY 2 -->
+    <div class="day-group">
+      <div class="day-name">Day 2 · C1 or C3</div>
+
+      <div class="block-label"><span class="tag tag-f">F</span> Dynamic Warm-Up</div>
+      <ul class="check-list">
+        <li class="check-item"><input type="checkbox" id="bz-d2-1"><label for="bz-d2-1"><span class="ex-label">Hip Circles</span><span class="ex-reps">×10 each leg</span></label></li>
+        <li class="check-item"><input type="checkbox" id="bz-d2-2"><label for="bz-d2-2"><span class="ex-label">Deep Squats</span><span class="ex-reps">×10</span></label></li>
+        <li class="check-item"><input type="checkbox" id="bz-d2-3"><label for="bz-d2-3"><span class="ex-label">Inchworm</span><span class="ex-reps">×5 cycles</span></label></li>
+        <li class="check-item"><input type="checkbox" id="bz-d2-4"><label for="bz-d2-4"><span class="ex-label">Backward Lunge with Twist</span><span class="ex-reps">×10</span></label></li>
+      </ul>
+
+      <div class="block-label"><span class="tag tag-c1">C1</span> Lower Body (or C3 if tired)</div>
+      <ul class="check-list">
+        <li class="check-item"><input type="checkbox" id="bz-d2-5"><label for="bz-d2-5"><span class="ex-label">Goblet Squat — 6kg KB</span><span class="ex-reps">3× to fatigue</span></label></li>
+        <li class="check-item"><input type="checkbox" id="bz-d2-6"><label for="bz-d2-6"><span class="ex-label">Romanian Deadlift — 2×5kg</span><span class="ex-reps">3× to fatigue</span></label></li>
+        <li class="check-item"><input type="checkbox" id="bz-d2-7"><label for="bz-d2-7"><span class="ex-label">Split Squat</span><span class="ex-reps">3× each leg</span></label></li>
+        <li class="check-item"><input type="checkbox" id="bz-d2-8"><label for="bz-d2-8"><span class="ex-label">Hip Bridge</span><span class="ex-reps">3× to fatigue</span></label></li>
+        <li class="check-item"><input type="checkbox" id="bz-d2-9"><label for="bz-d2-9"><span class="ex-label">Banded Monster Walk</span><span class="ex-reps">3×10 each side</span></label></li>
+        <li class="check-item"><input type="checkbox" id="bz-d2-10"><label for="bz-d2-10"><span class="ex-label">Calf Raise on stairs</span><span class="ex-reps">3×15</span></label></li>
+      </ul>
+
+      <div class="block-label"><span class="tag tag-f">F</span> Cool-Down</div>
+      <ul class="check-list">
+        <li class="check-item"><input type="checkbox" id="bz-d2-11"><label for="bz-d2-11"><span class="ex-label">Hip Flexor Lunge</span><span class="ex-reps">30s×4</span></label></li>
+        <li class="check-item"><input type="checkbox" id="bz-d2-12"><label for="bz-d2-12"><span class="ex-label">Piriformis</span><span class="ex-reps">30s×4</span></label></li>
+        <li class="check-item"><input type="checkbox" id="bz-d2-13"><label for="bz-d2-13"><span class="ex-label">Hamstrings</span><span class="ex-reps">30s×4</span></label></li>
+        <li class="check-item"><input type="checkbox" id="bz-d2-14"><label for="bz-d2-14"><span class="ex-label">Quad</span><span class="ex-reps">30s×4</span></label></li>
+        <li class="check-item"><input type="checkbox" id="bz-d2-15"><label for="bz-d2-15"><span class="ex-label">Calf</span><span class="ex-reps">30s×4</span></label></li>
+      </ul>
+    </div>
+
+    <!-- DAY 3 -->
+    <div class="day-group">
+      <div class="day-name">Day 3 · Run Zone 2</div>
+
+      <div class="block-label"><span class="tag tag-f">F</span> Dynamic Warm-Up</div>
+      <ul class="check-list">
+        <li class="check-item"><input type="checkbox" id="bz-d3-1"><label for="bz-d3-1"><span class="ex-label">Hip Circles</span><span class="ex-reps">×10 each leg</span></label></li>
+        <li class="check-item"><input type="checkbox" id="bz-d3-2"><label for="bz-d3-2"><span class="ex-label">Hip Swings</span><span class="ex-reps">×10 each leg</span></label></li>
+        <li class="check-item"><input type="checkbox" id="bz-d3-3"><label for="bz-d3-3"><span class="ex-label">High Knee to Chest Lunge</span><span class="ex-reps">×10 each leg</span></label></li>
+        <li class="check-item"><input type="checkbox" id="bz-d3-4"><label for="bz-d3-4"><span class="ex-label">Side Shuffle</span><span class="ex-reps">×10 each direction</span></label></li>
+      </ul>
+
+      <div class="block-label"><span class="tag tag-a">A</span> Zone 2 Run 45–60 min</div>
+      <ul class="check-list">
+        <li class="check-item"><input type="checkbox" id="bz-d3-5"><label for="bz-d3-5"><span class="ex-label">Zone 2 Run</span><span class="ex-reps">45–60 min conversational pace</span></label></li>
+      </ul>
+
+      <div class="block-label"><span class="tag tag-e">E</span> Footspeed Program 1 — 3 rounds</div>
+      <ul class="check-list">
+        <li class="check-item"><input type="checkbox" id="bz-d3-6"><label for="bz-d3-6"><span class="ex-label">Jump Rope</span><span class="ex-reps">1 min · 3 rounds</span></label></li>
+        <li class="check-item"><input type="checkbox" id="bz-d3-7"><label for="bz-d3-7"><span class="ex-label">Lateral Agility Hurdle Drill</span><span class="ex-reps">30 sec · 3 rounds</span></label></li>
+        <li class="check-item"><input type="checkbox" id="bz-d3-8"><label for="bz-d3-8"><span class="ex-label">Box Step Over on stairs</span><span class="ex-reps">30 sec · 3 rounds</span></label></li>
+      </ul>
+
+      <div class="block-label"><span class="tag tag-f">F</span> Cool-Down</div>
+      <ul class="check-list">
+        <li class="check-item"><input type="checkbox" id="bz-d3-9"><label for="bz-d3-9"><span class="ex-label">Hip Flexor Lunge</span><span class="ex-reps">30s×4 each</span></label></li>
+        <li class="check-item"><input type="checkbox" id="bz-d3-10"><label for="bz-d3-10"><span class="ex-label">Hamstrings</span><span class="ex-reps">30s×4 each</span></label></li>
+        <li class="check-item"><input type="checkbox" id="bz-d3-11"><label for="bz-d3-11"><span class="ex-label">Quad</span><span class="ex-reps">30s×4 each</span></label></li>
+        <li class="check-item"><input type="checkbox" id="bz-d3-12"><label for="bz-d3-12"><span class="ex-label">Calf</span><span class="ex-reps">30s×4 each</span></label></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+<!-- ════════════════════ RECOVERY WEEK ════════════════════ -->
+<div class="week-section week-recovery">
+  <div class="week-title" onclick="toggleWeek(this)">
+    💙 High Recovery Week — watch showing fatigue
+    <span class="toggle-icon">▼</span>
+  </div>
+  <div class="week-body">
+
+    <!-- RUN DAY -->
+    <div class="day-group">
+      <div class="day-name">Any Run Day · Zone 2 Only</div>
+
+      <div class="block-label"><span class="tag tag-f">F</span> Dynamic Warm-Up</div>
+      <ul class="check-list">
+        <li class="check-item"><input type="checkbox" id="r-d1-1"><label for="r-d1-1"><span class="ex-label">Hip Circles</span><span class="ex-reps">×10 each leg</span></label></li>
+        <li class="check-item"><input type="checkbox" id="r-d1-2"><label for="r-d1-2"><span class="ex-label">Hip Swings</span><span class="ex-reps">×10 each leg</span></label></li>
+        <li class="check-item"><input type="checkbox" id="r-d1-3"><label for="r-d1-3"><span class="ex-label">High Knee to Chest Lunge</span><span class="ex-reps">×10 each leg</span></label></li>
+        <li class="check-item"><input type="checkbox" id="r-d1-4"><label for="r-d1-4"><span class="ex-label">Side Shuffle</span><span class="ex-reps">×10 each direction</span></label></li>
+      </ul>
+
+      <div class="block-label"><span class="tag tag-a">A</span> Zone 2 Run — easy, 30–45 min · No SIT</div>
+      <ul class="check-list">
+        <li class="check-item"><input type="checkbox" id="r-d1-5"><label for="r-d1-5"><span class="ex-label">Zone 2 Run — easy</span><span class="ex-reps">30–45 min · no SIT this week</span></label></li>
+      </ul>
+
+      <div class="block-label"><span class="tag tag-e">E</span> Footspeed — light only</div>
+      <ul class="check-list">
+        <li class="check-item"><input type="checkbox" id="r-d1-6"><label for="r-d1-6"><span class="ex-label">Jump Rope</span><span class="ex-reps">1 min × 2 rounds only</span></label></li>
+      </ul>
+
+      <div class="block-label"><span class="tag tag-f">F</span> Cool-Down — extend to 20 min</div>
+      <ul class="check-list">
+        <li class="check-item"><input type="checkbox" id="r-d1-7"><label for="r-d1-7"><span class="ex-label">Hip Flexor + Piriformis + Hamstrings</span><span class="ex-reps">30s×4 each + foam roller</span></label></li>
+        <li class="check-item"><input type="checkbox" id="r-d1-8"><label for="r-d1-8"><span class="ex-label">Quad + Calf + Adductors</span><span class="ex-reps">30s×4 each</span></label></li>
+        <li class="check-item"><input type="checkbox" id="r-d1-9"><label for="r-d1-9"><span class="ex-label">Chest &amp; Shoulder + Trunk Twists</span><span class="ex-reps">30s×4 each</span></label></li>
+      </ul>
+    </div>
+
+    <!-- WEIGHTS DAY -->
+    <div class="day-group">
+      <div class="day-name">Any Weights Day · C3 Only</div>
+
+      <div class="block-label"><span class="tag tag-f">F</span> Dynamic Warm-Up</div>
+      <ul class="check-list">
+        <li class="check-item"><input type="checkbox" id="r-d2-1"><label for="r-d2-1"><span class="ex-label">Inchworm</span><span class="ex-reps">×5 cycles</span></label></li>
+        <li class="check-item"><input type="checkbox" id="r-d2-2"><label for="r-d2-2"><span class="ex-label">Open Book Cross</span><span class="ex-reps">×10 each side</span></label></li>
+        <li class="check-item"><input type="checkbox" id="r-d2-3"><label for="r-d2-3"><span class="ex-label">Side Shuffle</span><span class="ex-reps">×10 each direction</span></label></li>
+      </ul>
+
+      <div class="block-label"><span class="tag tag-c3">C3</span> Full Body / Core only · No C1 or C2</div>
+      <ul class="check-list">
+        <li class="check-item"><input type="checkbox" id="r-d2-4"><label for="r-d2-4"><span class="ex-label">Front Plank</span><span class="ex-reps">3× hold to fatigue</span></label></li>
+        <li class="check-item"><input type="checkbox" id="r-d2-5"><label for="r-d2-5"><span class="ex-label">Side Plank each side</span><span class="ex-reps">3× hold to fatigue</span></label></li>
+        <li class="check-item"><input type="checkbox" id="r-d2-6"><label for="r-d2-6"><span class="ex-label">KB Swing — 6kg</span><span class="ex-reps">3×10</span></label></li>
+        <li class="check-item"><input type="checkbox" id="r-d2-7"><label for="r-d2-7"><span class="ex-label">Band Pallof Press</span><span class="ex-reps">3×10 each side</span></label></li>
+        <li class="check-item"><input type="checkbox" id="r-d2-8"><label for="r-d2-8"><span class="ex-label">Single-leg Balance &amp; Reach</span><span class="ex-reps">×8 each direction</span></label></li>
+      </ul>
+
+      <div class="block-label"><span class="tag tag-f">F</span> Cool-Down + Foam Roller</div>
+      <ul class="check-list">
+        <li class="check-item"><input type="checkbox" id="r-d2-9"><label for="r-d2-9"><span class="ex-label">Full stretch sequence</span><span class="ex-reps">foam rolling: quads, IT band, upper back</span></label></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+<!-- ════════════════════ REPLACEMENT SESSIONS ════════════════════ -->
+<div class="replacement-section">
+  <div class="replacement-title">📺 Replacement Sessions</div>
+
+  <div class="block-label" style="padding-top:10px;"><span style="font-size:0.72rem;font-weight:600;color:#666;">VIDEOS</span></div>
+  <ul class="check-list">
+    <li class="check-item"><input type="checkbox" id="rep-1"><label for="rep-1"><span class="ex-label">25 Min Full Body</span></label></li>
+    <li class="check-item"><input type="checkbox" id="rep-2"><label for="rep-2"><span class="ex-label">30 Min Full Body</span></label></li>
+    <li class="check-item"><input type="checkbox" id="rep-3"><label for="rep-3"><span class="ex-label">30 Min Full Body Dumbbell</span></label></li>
+    <li class="check-item"><input type="checkbox" id="rep-4"><label for="rep-4"><span class="ex-label">30 Min Dumbbell Arms</span></label></li>
+    <li class="check-item"><input type="checkbox" id="rep-5"><label for="rep-5"><span class="ex-label">30 Min Lower Body</span></label></li>
+    <li class="check-item"><input type="checkbox" id="rep-6"><label for="rep-6"><span class="ex-label">20 Min Leg Workout</span></label></li>
+    <li class="check-item"><input type="checkbox" id="rep-7"><label for="rep-7"><span class="ex-label">20 Min Total Core</span></label></li>
+  </ul>
+
+  <div class="block-label" style="padding-top:6px;"><span style="font-size:0.72rem;font-weight:600;color:#666;">TRX SESSION</span></div>
+  <ul class="check-list" style="padding-bottom:14px;">
+    <li class="check-item"><input type="checkbox" id="rep-trx"><label for="rep-trx"><span class="ex-label">TRX Session</span></label></li>
+  </ul>
+</div>
+
+<!-- ── Confirm clear dialog ── -->
+<div class="confirm-overlay" id="confirmOverlay" onclick="cancelClear(event)">
+  <div class="confirm-box">
+    <h2>Clear all checkmarks?</h2>
+    <p>This will reset the entire checklist. Use this at the start of a new week.</p>
+    <div class="confirm-btns">
+      <button class="btn-cancel" onclick="cancelClear()">Cancel</button>
+      <button class="btn-confirm-clear" onclick="doClear()">Clear all</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── localStorage key ──
+  var STORAGE_KEY = 'face_checklist_v1';
+
+  // ── Load saved state on page open ──
+  function loadState() {
+    try {
+      var saved = localStorage.getItem(STORAGE_KEY);
+      if (!saved) return;
+      var state = JSON.parse(saved);
+      Object.keys(state).forEach(function(id) {
+        var el = document.getElementById(id);
+        if (el && el.type === 'checkbox') {
+          el.checked = state[id];
+          updateItemStyle(el);
+        }
+      });
+    } catch(e) {}
+    updateProgress();
+  }
+
+  // ── Save state ──
+  function saveState() {
+    try {
+      var state = {};
+      document.querySelectorAll('input[type="checkbox"]').forEach(function(cb) {
+        state[cb.id] = cb.checked;
+      });
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    } catch(e) {}
+  }
+
+  // ── Toggle strikethrough style on checked item ──
+  function updateItemStyle(cb) {
+    var li = cb.closest('.check-item');
+    if (!li) return;
+    if (cb.checked) li.classList.add('done');
+    else li.classList.remove('done');
+  }
+
+  // ── Progress bar ──
+  function updateProgress() {
+    var all = document.querySelectorAll('input[type="checkbox"]');
+    var checked = 0;
+    all.forEach(function(cb) { if (cb.checked) checked++; });
+    var pct = all.length > 0 ? Math.round(checked / all.length * 100) : 0;
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressLabel').textContent = checked + ' / ' + all.length + ' done';
+  }
+
+  // ── Wire up all checkboxes ──
+  document.querySelectorAll('input[type="checkbox"]').forEach(function(cb) {
+    cb.addEventListener('change', function() {
+      updateItemStyle(cb);
+      saveState();
+      updateProgress();
+    });
+  });
+
+  // ── Also allow clicking the li row itself (not just the checkbox) ──
+  document.querySelectorAll('.check-item').forEach(function(li) {
+    li.addEventListener('click', function(e) {
+      // Don't double-fire if click was on the checkbox or label itself
+      if (e.target.type === 'checkbox' || e.target.tagName === 'LABEL' ||
+          e.target.closest('label')) return;
+      var cb = li.querySelector('input[type="checkbox"]');
+      if (cb) { cb.checked = !cb.checked; cb.dispatchEvent(new Event('change')); }
+    });
+  });
+
+  // ── Collapse/expand week sections ──
+  function toggleWeek(titleEl) {
+    var body = titleEl.nextElementSibling;
+    titleEl.classList.toggle('collapsed');
+    body.classList.toggle('collapsed');
+  }
+
+  // ── Clear all ──
+  function confirmClear() {
+    document.getElementById('confirmOverlay').classList.add('active');
+  }
+
+  function cancelClear(e) {
+    if (!e || e.target === document.getElementById('confirmOverlay')) {
+      document.getElementById('confirmOverlay').classList.remove('active');
+    }
+  }
+
+  function doClear() {
+    document.querySelectorAll('input[type="checkbox"]').forEach(function(cb) {
+      cb.checked = false;
+      updateItemStyle(cb);
+    });
+    try { localStorage.removeItem(STORAGE_KEY); } catch(e) {}
+    updateProgress();
+    document.getElementById('confirmOverlay').classList.remove('active');
+  }
+
+  // ── Init ──
+  loadState();
+</script>
+
+</body>
+</html>
