@@ -232,6 +232,27 @@
     .card { break-inside: avoid; }
     .section-header { margin-top: 20px; }
   }
+
+  /* Image zoom popup */
+  .img-popup-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    cursor: zoom-out;
+  }
+  .img-popup-overlay.active { display: flex; }
+  .img-popup-overlay img {
+    max-width: 92vw;
+    max-height: 92vh;
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.6);
+  }
+  .card-img-wrap { cursor: zoom-in; }
 </style>
 </head>
 <body>
@@ -587,5 +608,29 @@
   Place your images in the <code>images/</code> folder using the exact filenames shown · File → Print → Save as PDF
 </p>
 
+
+<div class="img-popup-overlay" id="imgPopup" onclick="closeImgPopup()">
+  <img id="popupZoomImg" src="" alt="">
+</div>
+<script>
+  function openImgPopup(src) {
+    document.getElementById('popupZoomImg').src = src;
+    document.getElementById('imgPopup').classList.add('active');
+  }
+  function closeImgPopup() {
+    document.getElementById('imgPopup').classList.remove('active');
+    document.getElementById('popupZoomImg').src = '';
+  }
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeImgPopup();
+  });
+  // Make all card images clickable
+  document.querySelectorAll('.card-img-wrap').forEach(function(wrap) {
+    wrap.addEventListener('click', function() {
+      var img = wrap.querySelector('.exercise-img');
+      if (img && img.style.display !== 'none') openImgPopup(img.src);
+    });
+  });
+</script>
 </body>
 </html>
